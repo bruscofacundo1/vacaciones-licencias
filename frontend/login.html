@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GerenciAndo Canales — Ingresar</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0e0a17;--bg2:#160f24;--card:#1a1228;
+    --border:rgba(124,58,173,0.25);--border2:rgba(124,58,173,0.5);
+    --purple:#7c3aad;--accent:#b344e0;--pale:#c49de0;
+    --text:#f0e8ff;--text2:#b8a8d4;--text3:#7a6896;
+    --red:#f87171;--red-bg:rgba(248,113,113,0.1);
+    --green:#34d399;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .bg-orb{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;animation:float 8s ease-in-out infinite;}
+  .bg-orb-1{width:500px;height:500px;background:radial-gradient(circle,rgba(124,58,173,0.2),transparent 70%);top:-150px;right:-100px;}
+  .bg-orb-2{width:400px;height:400px;background:radial-gradient(circle,rgba(179,68,224,0.12),transparent 70%);bottom:-100px;left:-100px;animation-delay:-4s;}
+  @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-20px);}}
+  .bg-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(124,58,173,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,173,0.04) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;}
+  .login-wrap{position:relative;z-index:1;width:100%;max-width:420px;padding:20px;animation:fadeUp 0.5s ease both;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+  .logo{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:36px;}
+  .logo-bars{display:flex;gap:3px;align-items:flex-end;}
+  .logo-bars span{display:block;width:5px;border-radius:3px;background:linear-gradient(180deg,#b344e0,#7c3aad);}
+  .logo-bars span:nth-child(1){height:16px;}.logo-bars span:nth-child(2){height:24px;}.logo-bars span:nth-child(3){height:18px;}.logo-bars span:nth-child(4){height:28px;}.logo-bars span:nth-child(5){height:20px;}
+  .logo-text{font-family:'Syne',sans-serif;line-height:1.1;}
+  .logo-text strong{font-size:20px;font-weight:700;color:var(--pale);display:block;}
+  .logo-text em{font-style:normal;font-size:13px;color:var(--text3);}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:36px;box-shadow:0 24px 60px rgba(0,0,0,0.4);}
+  .card-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:6px;}
+  .card-sub{font-size:13px;color:var(--text3);margin-bottom:28px;}
+  .form-group{margin-bottom:18px;}
+  .form-label{display:block;font-size:12px;font-weight:500;color:var(--text3);margin-bottom:7px;letter-spacing:0.3px;}
+  .form-input{width:100%;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color 0.2s,box-shadow 0.2s;}
+  .form-input:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,173,0.15);}
+  .form-input::placeholder{color:var(--text3);}
+  .btn-login{width:100%;padding:13px;background:linear-gradient(135deg,var(--purple),var(--accent));color:white;border:none;border-radius:10px;font-family:'Syne',sans-serif;font-size:15px;font-weight:600;cursor:pointer;margin-top:8px;transition:all 0.2s;box-shadow:0 4px 20px rgba(124,58,173,0.35);display:flex;align-items:center;justify-content:center;gap:8px;}
+  .btn-login:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(124,58,173,0.5);}
+  .btn-login:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+  .spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;display:none;}
+  .btn-login.loading .spinner{display:block;}
+  .btn-login.loading .btn-text{display:none;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .error-msg{display:none;background:var(--red-bg);border:1px solid rgba(248,113,113,0.3);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--red);margin-bottom:16px;animation:shake 0.3s ease;}
+  .error-msg.show{display:flex;align-items:center;gap:8px;}
+  @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+  .forgot-link{text-align:center;margin-top:14px;}
+  .forgot-link span{font-size:12px;color:var(--text3);cursor:pointer;transition:color 0.15s;}
+  .forgot-link span:hover{color:var(--pale);}
+  .recuperar-panel{display:none;margin-top:16px;padding:16px;background:rgba(124,58,173,0.08);border:1px solid var(--border);border-radius:12px;}
+  .recuperar-panel .rec-title{font-size:13px;font-weight:500;color:var(--text2);margin-bottom:10px;}
+  .recuperar-panel .form-input{margin-bottom:10px;}
+  .btn-rec{width:100%;padding:10px;background:linear-gradient(135deg,var(--purple),var(--accent));color:white;border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s;}
+  .btn-rec:disabled{opacity:0.6;cursor:not-allowed;}
+  .rec-msg{display:none;margin-top:10px;padding:9px 12px;border-radius:8px;font-size:12px;}
+  .rec-msg.ok{background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);color:var(--green);}
+  .rec-msg.err{background:var(--red-bg);border:1px solid rgba(248,113,113,0.2);color:var(--red);}
+</style>
+<script src="config.js"></script></head>
+<body>
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+<div class="bg-grid"></div>
+
+<div class="login-wrap">
+  <div class="logo">
+    <div class="logo-bars"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="logo-text"><strong>GerenciAndo</strong><em>Canales · Licencias</em></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Bienvenido 👋</div>
+    <div class="card-sub">Ingresá con tu cuenta para continuar</div>
+
+    <div class="error-msg" id="error-msg"><span>⚠</span><span id="error-text">Credenciales incorrectas</span></div>
+
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-input" id="email" placeholder="tu@email.com">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Contraseña</label>
+      <input type="password" class="form-input" id="password" placeholder="••••••••">
+    </div>
+
+    <button class="btn-login" id="btn-login" onclick="login()">
+      <div class="spinner"></div>
+      <span class="btn-text">Ingresar</span>
+    </button>
+
+    <!-- Olvidé mi contraseña -->
+    <div class="forgot-link">
+      <span onclick="toggleRecuperar()">¿Olvidaste tu contraseña?</span>
+    </div>
+
+    <div class="recuperar-panel" id="recuperar-panel">
+      <div class="rec-title">Ingresá tu email y te enviamos un link para recuperar tu contraseña</div>
+      <input type="email" class="form-input" id="email-rec" placeholder="tu@email.com">
+      <button class="btn-rec" id="btn-rec" onclick="recuperar()">
+        <div class="spinner" id="spin-rec" style="display:none"></div>
+        <span id="txt-rec">Enviar link</span>
+      </button>
+      <div class="rec-msg" id="rec-msg"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const API = window.API_URL;
+
+  const token = sessionStorage.getItem('token');
+  if (token) window.location.href = 'dashboard.html';
+
+  document.getElementById('password').addEventListener('keydown', e => {
+    if (e.key === 'Enter') login();
+  });
+  document.getElementById('email-rec').addEventListener('keydown', e => {
+    if (e.key === 'Enter') recuperar();
+  });
+
+  function toggleRecuperar() {
+    const panel = document.getElementById('recuperar-panel');
+    panel.style.display = panel.style.display === 'none' || panel.style.display === '' ? 'block' : 'none';
+  }
+
+  async function login() {
+    const email    = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const btn      = document.getElementById('btn-login');
+    const errorMsg = document.getElementById('error-msg');
+
+    if (!email || !password) { showError('Completá email y contraseña'); return; }
+
+    btn.disabled = true;
+    btn.classList.add('loading');
+    errorMsg.classList.remove('show');
+
+    try {
+      const res  = await fetch(`${API}/auth/login`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) { showError(data.error || 'Credenciales incorrectas'); return; }
+
+      sessionStorage.setItem('token',   data.token);
+      sessionStorage.setItem('usuario', JSON.stringify(data.usuario));
+      window.location.href = 'dashboard.html';
+    } catch(err) {
+      showError('No se pudo conectar con el servidor. ¿Está corriendo la API?');
+    } finally {
+      btn.disabled = false;
+      btn.classList.remove('loading');
+    }
+  }
+
+  async function recuperar() {
+    const email = document.getElementById('email-rec').value.trim();
+    if (!email) return;
+
+    const btn = document.getElementById('btn-rec');
+    btn.disabled = true;
+    document.getElementById('spin-rec').style.display = 'block';
+    document.getElementById('txt-rec').style.display  = 'none';
+
+    try {
+      await fetch(`${API}/auth/recuperar`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ email }),
+      });
+      showRecMsg('✅ Si el email existe, recibirás un link en breve. Revisá tu bandeja de entrada.', 'ok');
+    } catch(e) {
+      showRecMsg('Error al enviar. Verificá tu conexión.', 'err');
+    } finally {
+      btn.disabled = false;
+      document.getElementById('spin-rec').style.display = 'none';
+      document.getElementById('txt-rec').style.display  = 'block';
+    }
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('error-msg');
+    document.getElementById('error-text').textContent = msg;
+    el.classList.add('show');
+  }
+
+  function showRecMsg(msg, type) {
+    const el = document.getElementById('rec-msg');
+    el.textContent  = msg;
+    el.className    = `rec-msg ${type}`;
+    el.style.display = 'block';
+  }
+</script>
+</body>
+</html>

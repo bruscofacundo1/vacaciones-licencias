@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GerenciAndo Canales — Usuarios</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0e0a17;--bg2:#160f24;--card:#1a1228;--card2:#221a34;
+    --border:rgba(124,58,173,0.25);--border2:rgba(124,58,173,0.5);
+    --purple:#7c3aad;--accent:#b344e0;--pale:#c49de0;
+    --text:#f0e8ff;--text2:#b8a8d4;--text3:#7a6896;
+    --green:#34d399;--green-bg:rgba(52,211,153,0.1);
+    --yellow:#fbbf24;--yellow-bg:rgba(251,191,36,0.1);
+    --red:#f87171;--red-bg:rgba(248,113,113,0.1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+  body::before{content:'';position:fixed;top:-200px;right:-200px;width:500px;height:500px;background:radial-gradient(circle,rgba(124,58,173,0.12),transparent 70%);pointer-events:none;z-index:0;}
+
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--border);background:rgba(14,10,23,0.9);backdrop-filter:blur(10px);position:sticky;top:0;z-index:50;}
+  .topbar-left{display:flex;align-items:center;gap:14px;}
+  .back-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text2);font-size:13px;cursor:pointer;text-decoration:none;transition:all 0.15s;font-family:'DM Sans',sans-serif;}
+  .back-btn:hover{border-color:var(--border2);color:var(--text);}
+  .topbar-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;}
+  .topbar-sub{font-size:12px;color:var(--text3);}
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all 0.2s;}
+  .btn-primary{background:linear-gradient(135deg,var(--purple),var(--accent));color:white;box-shadow:0 4px 15px rgba(124,58,173,0.3);}
+  .btn-primary:hover{transform:translateY(-1px);}
+  .btn-primary:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+  .btn-ghost{background:var(--card);color:var(--text2);border:1px solid var(--border);}
+  .btn-ghost:hover{border-color:var(--border2);color:var(--text);}
+
+  .content{padding:28px 32px;position:relative;z-index:1;}
+
+  /* INFO BANNER */
+  .info-box{background:rgba(124,58,173,0.08);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:24px;display:flex;align-items:flex-start;gap:12px;}
+  .info-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
+  .info-text{font-size:13px;color:var(--text2);line-height:1.6;}
+  .info-text strong{color:var(--pale);}
+
+  /* GRID */
+  .grid{display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start;}
+
+  /* TABLA */
+  .table-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+  .card-header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);}
+  .card-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px;}
+  .cdot{width:6px;height:6px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--accent));}
+  table{width:100%;border-collapse:collapse;}
+  thead th{padding:10px 18px;text-align:left;font-size:10px;font-weight:500;letter-spacing:0.8px;text-transform:uppercase;color:var(--text3);background:var(--bg2);border-bottom:1px solid var(--border);}
+  tbody tr{border-bottom:1px solid rgba(124,58,173,0.08);transition:background 0.15s;}
+  tbody tr:hover{background:rgba(124,58,173,0.05);}
+  tbody tr:last-child{border-bottom:none;}
+  td{padding:12px 18px;font-size:13px;}
+  .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;}
+  .b-dot{width:5px;height:5px;border-radius:50%;}
+  .b-purple{background:rgba(124,58,173,0.2);color:var(--pale);}.b-purple .b-dot{background:var(--pale);}
+  .b-blue{background:rgba(96,165,250,0.1);color:#60a5fa;}.b-blue .b-dot{background:#60a5fa;}
+  .b-red{background:var(--red-bg);color:var(--red);}.b-red .b-dot{background:var(--red);}
+  .b-green{background:var(--green-bg);color:var(--green);}.b-green .b-dot{background:var(--green);}
+  .row-actions{display:flex;gap:6px;opacity:0;transition:opacity 0.15s;}
+  tbody tr:hover .row-actions{opacity:1;}
+  .act{padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
+  .act-rol{background:rgba(96,165,250,0.1);color:#60a5fa;}.act-rol:hover{background:rgba(96,165,250,0.2);}
+  .act-del{background:var(--red-bg);color:var(--red);}.act-del:hover{background:rgba(248,113,113,0.2);}
+
+  /* FORM CARD */
+  .form-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;}
+  .form-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:600;margin-bottom:4px;}
+  .form-sub{font-size:12px;color:var(--text3);margin-bottom:18px;}
+  .form-row{margin-bottom:13px;}
+  .form-label{font-size:11px;color:var(--text3);margin-bottom:5px;display:block;font-weight:500;}
+  .req{color:var(--accent);}
+  .form-input,.form-select{width:100%;padding:10px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color 0.2s;}
+  .form-input:focus,.form-select:focus{border-color:var(--border2);}
+  .form-input::placeholder{color:var(--text3);}
+  .form-select option{background:var(--bg2);}
+  .rol-info{margin-top:8px;padding:10px 12px;border-radius:8px;font-size:12px;line-height:1.5;}
+  .rol-admin{background:rgba(124,58,173,0.1);border:1px solid var(--border);color:var(--text2);}
+  .rol-emp{background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.15);color:var(--text2);}
+
+  /* FILTROS */
+  .filter-bar{display:flex;gap:8px;padding:12px 18px;border-bottom:1px solid var(--border);background:var(--bg2);flex-wrap:wrap;}
+  .filter-select{padding:6px 10px;background:var(--card);border:1px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text2);outline:none;cursor:pointer;transition:border-color 0.15s;}
+  .filter-select:focus,.filter-select:hover{border-color:var(--border2);}
+  .filter-select option{background:var(--bg2);}
+  .act-eliminar{background:rgba(248,113,113,0.15);color:var(--red);border:1px solid rgba(248,113,113,0.3);}.act-eliminar:hover{background:rgba(248,113,113,0.3);}
+
+  /* MODAL */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s;}
+  .modal-overlay.open{opacity:1;pointer-events:all;}
+  .modal{background:var(--card2,#221a34);border:1px solid var(--border2);border-radius:18px;padding:28px;width:420px;max-width:95vw;transform:scale(0.95) translateY(10px);transition:transform 0.25s;box-shadow:0 24px 60px rgba(0,0,0,0.5);}
+  .modal-overlay.open .modal{transform:scale(1) translateY(0);}
+  .modal-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:4px;}
+  .modal-sub{font-size:12px;color:var(--text3);margin-bottom:20px;}
+  .modal-actions{display:flex;gap:10px;margin-top:20px;}
+  .modal-actions .btn{flex:1;justify-content:center;}
+  .act-vincular{background:rgba(52,211,153,0.1);color:var(--green);border:1px solid rgba(52,211,153,0.2);}.act-vincular:hover{background:rgba(52,211,153,0.2);}
+
+  /* LOADING */
+  .loading-wrap{display:flex;align-items:center;justify-content:center;min-height:60vh;gap:10px;color:var(--text3);}
+  .spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(124,58,173,0.3);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+  .empty{text-align:center;padding:40px;color:var(--text3);font-size:13px;}
+
+  .toast{position:fixed;bottom:22px;right:22px;padding:11px 16px;border-radius:10px;font-size:13px;font-weight:500;z-index:999;transform:translateY(80px);opacity:0;transition:all 0.3s;box-shadow:0 8px 24px rgba(0,0,0,0.3);}
+  .toast.show{transform:translateY(0);opacity:1;}
+  .toast.success{background:#064e3b;border:1px solid #065f46;color:var(--green);}
+  .toast.error{background:#450a0a;border:1px solid #7f1d1d;color:var(--red);}
+  .toast.info{background:#1e3a5f;border:1px solid #1e40af;color:#60a5fa;}
+</style>
+<script src="config.js"></script></head>
+<body>
+
+<div id="app">
+  <div class="loading-wrap"><div class="spinner"></div> Cargando...</div>
+</div>
+
+<!-- MODAL VINCULAR EMPLEADO -->
+<div class="modal-overlay" id="modal-vincular" onclick="if(event.target===this)cerrarVincular()">
+  <div class="modal">
+    <div class="modal-title">Vincular empleado</div>
+    <div class="modal-sub">Asociá este usuario a un empleado existente sin usuario asignado</div>
+    <div style="margin-bottom:13px">
+      <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:5px;font-weight:500">Empleado</label>
+      <select class="form-select" id="sel-empleado-vincular" style="width:100%;padding:10px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;">
+        <option value="">Cargando...</option>
+      </select>
+    </div>
+    <div id="vincular-crear-emp" style="display:none;margin-bottom:4px">
+      <a href="empleados.html?nuevo=1" class="btn btn-ghost" style="width:100%;justify-content:center;font-size:13px;text-decoration:none">
+        + Crear nuevo empleado
+      </a>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="cerrarVincular()">Cancelar</button>
+      <button class="btn btn-primary" id="btn-confirmar-vincular" onclick="confirmarVincular()">Vincular</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = window.API_URL;
+const token = sessionStorage.getItem('token');
+const usuario = JSON.parse(sessionStorage.getItem('usuario') || 'null');
+if (!token || !usuario || usuario.rol !== 'ADMIN') window.location.href = 'login.html';
+const H = () => ({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` });
+
+let usuarios = [];
+let filtros = { rol: '', estado: '', area: '' };
+
+document.addEventListener('DOMContentLoaded', cargarPagina);
+
+async function cargarPagina() {
+  try {
+    const r = await fetch(`${API}/auth/usuarios`, { headers: H() });
+    usuarios = await r.json();
+    renderPagina();
+  } catch(e) {
+    document.getElementById('app').innerHTML = `<div class="loading-wrap" style="color:var(--red)">Error al cargar usuarios</div>`;
+  }
+}
+
+function renderPagina() {
+  const admins   = usuarios.filter(u => u.rol === 'ADMIN' && u.activo).length;
+  const empleados = usuarios.filter(u => u.rol === 'EMPLEADO' && u.activo).length;
+  const inactivos = usuarios.filter(u => !u.activo).length;
+
+  document.getElementById('app').innerHTML = `
+    <div class="topbar">
+      <div class="topbar-left">
+        <a href="dashboard.html" class="back-btn">← Volver</a>
+        <div>
+          <div class="topbar-title">Usuarios del sistema</div>
+          <div class="topbar-sub">${admins} admins · ${empleados} empleados · ${inactivos} inactivos</div>
+        </div>
+      </div>
+    </div>
+    <div class="content">
+      <div class="info-box">
+        <div class="info-icon">ℹ️</div>
+        <div class="info-text">
+          Los <strong>Administradores</strong> ven el dashboard completo, pueden aprobar licencias y gestionar empleados.<br>
+          Los <strong>Empleados</strong> solo ven su propio panel con sus días disponibles y licencias.<br>
+          Los empleados creados desde la pantalla de Empleados ya tienen su usuario vinculado automáticamente.
+        </div>
+      </div>
+      <div class="grid">
+        <div class="table-card" style="animation:fadeUp 0.4s ease both">
+          <div class="card-header">
+            <div class="card-title"><div class="cdot"></div> Todos los usuarios</div>
+          </div>
+          <div class="filter-bar">
+            <select class="filter-select" onchange="filtros.rol=this.value;renderTablaFiltrada()">
+              <option value="">Todos los roles</option>
+              <option value="ADMIN">Admin</option>
+              <option value="EMPLEADO">Empleado</option>
+            </select>
+            <select class="filter-select" onchange="filtros.estado=this.value;renderTablaFiltrada()">
+              <option value="">Todos los estados</option>
+              <option value="activo">Activos</option>
+              <option value="inactivo">Inactivos</option>
+            </select>
+            <select class="filter-select" id="sel-area" onchange="filtros.area=this.value;renderTablaFiltrada()">
+              <option value="">Todas las áreas</option>
+              ${[...new Set(usuarios.map(u => u.empleado?.area).filter(Boolean))].sort().map(a => `<option value="${a}">${a}</option>`).join('')}
+            </select>
+          </div>
+          <div id="tabla-wrap">${renderTabla()}</div>
+        </div>
+        <div class="form-card" style="animation:fadeUp 0.4s ease 0.1s both">
+          <div class="form-title">Nuevo administrador</div>
+          <div class="form-sub">Crear una cuenta con acceso completo al sistema</div>
+          <div class="form-row">
+            <label class="form-label">Email <span class="req">*</span></label>
+            <input type="email" class="form-input" id="f-email" placeholder="gerente@empresa.com">
+          </div>
+          <div class="form-row">
+            <label class="form-label">Contraseña inicial <span class="req">*</span></label>
+            <input type="text" class="form-input" id="f-pass" placeholder="Mínimo 6 caracteres">
+          </div>
+          <div class="form-row">
+            <label class="form-label">Rol <span class="req">*</span></label>
+            <select class="form-select" id="f-rol" onchange="mostrarInfoRol(this.value)">
+              <option value="ADMIN">Administrador</option>
+              <option value="EMPLEADO">Empleado</option>
+            </select>
+            <div class="rol-info rol-admin" id="rol-info">
+              👤 <strong>Admin:</strong> Accede al dashboard completo, puede crear licencias, aprobar solicitudes y gestionar empleados.
+            </div>
+          </div>
+          <button class="btn btn-primary" id="btn-crear" onclick="crearUsuario()" style="width:100%;justify-content:center;margin-top:4px">
+            Crear usuario
+          </button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function mostrarInfoRol(rol) {
+  const el = document.getElementById('rol-info');
+  if (rol === 'ADMIN') {
+    el.className = 'rol-info rol-admin';
+    el.innerHTML = '👤 <strong>Admin:</strong> Accede al dashboard completo, puede crear licencias, aprobar solicitudes y gestionar empleados.';
+  } else {
+    el.className = 'rol-info rol-emp';
+    el.innerHTML = '👤 <strong>Empleado:</strong> Solo ve su propio panel con sus días disponibles e historial de licencias.';
+  }
+}
+
+function renderTabla() {
+  let lista = usuarios;
+  if (filtros.rol)    lista = lista.filter(u => u.rol === filtros.rol);
+  if (filtros.estado === 'activo')   lista = lista.filter(u => u.activo);
+  if (filtros.estado === 'inactivo') lista = lista.filter(u => !u.activo);
+  if (filtros.area)   lista = lista.filter(u => u.empleado?.area === filtros.area);
+
+  if (!lista.length) return `<div class="empty">Sin usuarios${filtros.rol||filtros.estado||filtros.area ? ' que coincidan con los filtros' : ' registrados'}</div>`;
+
+  return `<table>
+    <thead><tr>
+      <th>Usuario</th><th>Vinculado a</th><th>Rol</th><th>Estado</th><th>Desde</th><th></th>
+    </tr></thead>
+    <tbody>
+    ${lista.map(u => {
+      const esMismo = u.id === usuario.id;
+      const rolBadge = u.rol === 'ADMIN' ? 'b-purple' : 'b-blue';
+      const rolLabel = u.rol === 'ADMIN' ? 'Admin' : 'Empleado';
+      const estadoBadge = u.activo ? 'b-green' : 'b-red';
+      const estadoLabel = u.activo ? 'Activo' : 'Inactivo';
+      const vinculado = u.empleado ? `${u.empleado.nombre} ${u.empleado.apellido}` : '—';
+      const fecha = new Date(u.createdAt).toLocaleDateString('es-AR', {day:'2-digit',month:'short',year:'numeric'});
+
+      return `<tr>
+        <td>
+          <div style="font-weight:500;font-size:13px">${u.email} ${esMismo ? '<span style="font-size:10px;color:var(--text3)">(vos)</span>' : ''}</div>
+        </td>
+        <td style="font-size:12px;color:var(--text3)">${u.empleado ? vinculado : `<span style="color:var(--yellow);font-size:11px">Sin empleado</span>`}</td>
+        <td><span class="badge ${rolBadge}"><span class="b-dot"></span>${rolLabel}</span></td>
+        <td><span class="badge ${estadoBadge}"><span class="b-dot"></span>${estadoLabel}</span></td>
+        <td style="font-size:12px;color:var(--text3)">${fecha}</td>
+        <td>
+          ${!esMismo ? `<div class="row-actions">
+            ${!u.empleado ? `<button class="act act-vincular" onclick="abrirVincular('${u.id}')">🔗 Vincular empleado</button>` : ''}
+            <button class="act act-rol" onclick="cambiarRol('${u.id}','${u.rol}')">
+              ${u.rol === 'ADMIN' ? '↓ Empleado' : '↑ Admin'}
+            </button>
+            ${u.activo
+              ? `<button class="act act-del" onclick="desactivar('${u.id}','${u.email}')">Desactivar</button>`
+              : `<button class="act act-rol" onclick="reactivar('${u.id}')">Reactivar</button>
+                 <button class="act act-eliminar" onclick="eliminar('${u.id}','${u.email}')">Eliminar</button>`
+            }
+          </div>` : ''}
+        </td>
+      </tr>`;
+    }).join('')}
+    </tbody>
+  </table>`;
+}
+
+function renderTablaFiltrada() {
+  document.getElementById('tabla-wrap').innerHTML = renderTabla();
+}
+
+async function crearUsuario() {
+  const email    = document.getElementById('f-email').value.trim();
+  const password = document.getElementById('f-pass').value.trim();
+  const rol      = document.getElementById('f-rol').value;
+
+  if (!email || !password) { showToast('Completá email y contraseña', 'error'); return; }
+  if (password.length < 6) { showToast('Contraseña mínimo 6 caracteres', 'error'); return; }
+
+  const btn = document.getElementById('btn-crear');
+  btn.disabled = true; btn.textContent = 'Creando...';
+
+  try {
+    const r = await fetch(`${API}/auth/usuarios`, {
+      method: 'POST',
+      headers: H(),
+      body: JSON.stringify({ email, password, rol }),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error);
+
+    document.getElementById('f-email').value = '';
+    document.getElementById('f-pass').value  = '';
+    showToast(`✅ Usuario ${rol === 'ADMIN' ? 'admin' : 'empleado'} creado`, 'success');
+    await cargarPagina();
+  } catch(e) {
+    showToast(e.message || 'Error al crear', 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Crear usuario';
+  }
+}
+
+async function cambiarRol(id, rolActual) {
+  const nuevoRol = rolActual === 'ADMIN' ? 'EMPLEADO' : 'ADMIN';
+  try {
+    const r = await fetch(`${API}/auth/usuarios/${id}`, {
+      method: 'PUT', headers: H(), body: JSON.stringify({ rol: nuevoRol }),
+    });
+    if (!r.ok) throw new Error((await r.json()).error);
+    showToast(`Rol cambiado a ${nuevoRol}`, 'info');
+    await cargarPagina();
+  } catch(e) { showToast(e.message || 'Error', 'error'); }
+}
+
+async function desactivar(id, email) {
+  if (!confirm(`¿Desactivar a ${email}? No podrá iniciar sesión.`)) return;
+  try {
+    const r = await fetch(`${API}/auth/usuarios/${id}`, {
+      method: 'DELETE', headers: H(),
+    });
+    if (!r.ok) throw new Error((await r.json()).error);
+    showToast('Usuario desactivado', 'info');
+    await cargarPagina();
+  } catch(e) { showToast(e.message || 'Error', 'error'); }
+}
+
+async function eliminar(id, email) {
+  if (!confirm(`¿Eliminar permanentemente a ${email}?\n\nEsta acción no se puede deshacer. El empleado vinculado no se verá afectado.`)) return;
+  try {
+    const r = await fetch(`${API}/auth/usuarios/${id}/eliminar`, {
+      method: 'DELETE', headers: H(),
+    });
+    if (!r.ok) throw new Error((await r.json()).error);
+    usuarios = usuarios.filter(u => u.id !== id);
+    renderTablaFiltrada();
+    showToast('Usuario eliminado permanentemente', 'info');
+  } catch(e) { showToast(e.message || 'Error', 'error'); }
+}
+
+async function reactivar(id) {
+  try {
+    const r = await fetch(`${API}/auth/usuarios/${id}`, {
+      method: 'PUT', headers: H(), body: JSON.stringify({ activo: true }),
+    });
+    if (!r.ok) throw new Error((await r.json()).error);
+    showToast('✅ Usuario reactivado', 'success');
+    await cargarPagina();
+  } catch(e) { showToast(e.message || 'Error', 'error'); }
+}
+
+let vincularUsuarioId = null;
+
+async function abrirVincular(userId) {
+  vincularUsuarioId = userId;
+  const sel = document.getElementById('sel-empleado-vincular');
+  sel.innerHTML = '<option value="">Cargando empleados...</option>';
+  document.getElementById('modal-vincular').classList.add('open');
+
+  try {
+    const r = await fetch(`${API}/empleados`, { headers: H() });
+    const empleados = await r.json();
+    const sinUsuario = empleados.filter(e => !e.usuario);
+
+    if (!sinUsuario.length) {
+      sel.innerHTML = '<option value="">— Todos los empleados ya tienen usuario —</option>';
+      document.getElementById('btn-confirmar-vincular').disabled = true;
+      document.getElementById('vincular-crear-emp').style.display = 'block';
+    } else {
+      document.getElementById('vincular-crear-emp').style.display = 'none';
+      document.getElementById('btn-confirmar-vincular').disabled = false;
+      sel.innerHTML = '<option value="">Seleccioná un empleado...</option>' +
+        sinUsuario.map(e => `<option value="${e.id}">${e.nombre} ${e.apellido} — ${e.area}</option>`).join('');
+    }
+  } catch {
+    sel.innerHTML = '<option value="">Error al cargar empleados</option>';
+  }
+}
+
+function cerrarVincular() {
+  document.getElementById('modal-vincular').classList.remove('open');
+  vincularUsuarioId = null;
+}
+
+async function confirmarVincular() {
+  const empleadoId = document.getElementById('sel-empleado-vincular').value;
+  if (!empleadoId) { showToast('Seleccioná un empleado', 'error'); return; }
+
+  const btn = document.getElementById('btn-confirmar-vincular');
+  btn.disabled = true; btn.textContent = 'Vinculando...';
+
+  try {
+    const r = await fetch(`${API}/auth/usuarios/${vincularUsuarioId}/vincular`, {
+      method: 'PUT', headers: H(), body: JSON.stringify({ empleadoId }),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error);
+
+    cerrarVincular();
+    showToast('✅ Usuario vinculado al empleado', 'success');
+    await cargarPagina();
+  } catch(e) {
+    showToast(e.message || 'Error al vincular', 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Vincular';
+  }
+}
+
+let toastT;
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
+  clearTimeout(toastT);
+  toastT = setTimeout(() => t.classList.remove('show'), 3500);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Empresa {
+  id        String     @id @default(cuid())
+  nombre    String
+  logo      String?
+  createdAt DateTime   @default(now())
+
+  usuarios  Usuario[]
+  empleados Empleado[]
+  feriados  Feriado[]
+}
+
+model Usuario {
+  id         String   @id @default(cuid())
+  email      String   @unique
+  password   String
+  rol        Rol      @default(EMPLEADO)
+  activo     Boolean  @default(true)
+  createdAt  DateTime @default(now())
+
+  empresa    Empresa  @relation(fields: [empresaId], references: [id])
+  empresaId  String
+
+  empleado   Empleado? @relation(fields: [empleadoId], references: [id])
+  empleadoId String?   @unique
+
+  firmas     Firma[]
+
+  resetToken          String?
+  resetTokenExpiry    DateTime?
+}
+
+enum Rol {
+  ADMIN
+  EMPLEADO
+}
+
+model Empleado {
+  id               String   @id @default(cuid())
+  nombre           String
+  apellido         String
+  documento        String?
+  cuil             String?
+  telefono         String?
+  fechaNacimiento  DateTime?
+  fechaIngreso     DateTime
+  area             String
+  activo           Boolean  @default(true)
+  createdAt        DateTime @default(now())
+
+  empresa    Empresa      @relation(fields: [empresaId], references: [id])
+  empresaId  String
+
+  licencias  Licencia[]
+  saldos     SaldoAnual[]
+  usuario    Usuario?
+}
+
+model Licencia {
+  id            String         @id @default(cuid())
+  fechaInicio   DateTime
+  fechaFin      DateTime
+  diasHabiles   Int
+  tipo          TipoLicencia
+  observaciones String?
+  estado        EstadoLicencia @default(PENDIENTE)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  empleado   Empleado   @relation(fields: [empleadoId], references: [id])
+  empleadoId String
+
+  aprobacion Aprobacion?
+  firma      Firma?
+}
+
+enum TipoLicencia {
+  VACACIONES
+  PERMISO
+  LICENCIA_MEDICA
+  AUSENCIA
+}
+
+enum EstadoLicencia {
+  PENDIENTE
+  APROBADA
+  RECHAZADA
+  CUMPLIDA
+}
+
+model Aprobacion {
+  id         String   @id @default(cuid())
+  estado     String
+  motivo     String?
+  fecha      DateTime @default(now())
+
+  licencia   Licencia @relation(fields: [licenciaId], references: [id])
+  licenciaId String   @unique
+}
+
+model Firma {
+  id           String   @id @default(cuid())
+  imagenBase64 String   @db.Text
+  fecha        DateTime @default(now())
+
+  licencia   Licencia @relation(fields: [licenciaId], references: [id])
+  licenciaId String   @unique
+
+  firmadoPor Usuario @relation(fields: [usuarioId], references: [id])
+  usuarioId  String
+}
+
+model SaldoAnual {
+  id             String  @id @default(cuid())
+  anio           Int
+  diasAsignados  Int
+  diasTomados    Int     @default(0)
+  diasPendientes Int
+  cerrado        Boolean @default(false)
+
+  empleado   Empleado @relation(fields: [empleadoId], references: [id])
+  empleadoId String
+
+  @@unique([empleadoId, anio])
+}
+
+model Feriado {
+  id        String   @id @default(cuid())
+  fecha     DateTime
+  nombre    String
+  tipo      String
+  anio      Int
+
+  empresa   Empresa @relation(fields: [empresaId], references: [id])
+  empresaId String
+
+  @@unique([fecha, empresaId])
+}

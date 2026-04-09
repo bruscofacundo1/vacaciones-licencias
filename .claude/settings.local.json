@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -r \"Authorization\\\\|Authorization\\\\|localStorage\\\\|sessionStorage\" /d/TRABAJO/proyecto-vaciones-2/frontend/*.html)"
+    ]
+  }
+}
