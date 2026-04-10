@@ -1,4 +1,4 @@
-// URL de la API â€” cambiÃ¡ este valor cuando deployÃ©s el backend
+// URL de la API — cambiá este valor cuando deployés el backend
 // Desarrollo:  'http://localhost:3000/api'
-// ProducciÃ³n:  'https://TU-APP.up.railway.app/api'
+// Producción:  'https://TU-APP.up.railway.app/api'
 window.API_URL = 'https://vacaciones-licencias-production.up.railway.app/api';
