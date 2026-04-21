@@ -15,10 +15,19 @@ const app = express();
 app.use(helmet());
 
 const isDev = process.env.NODE_ENV !== 'production';
+const allowedOrigins = (process.env.FRONTEND_URL || '')
+  .split(',')
+  .map(s => s.trim())
+  .filter(Boolean);
+
 app.use(cors({
   origin: isDev
-    ? (origin, cb) => cb(null, true) // en desarrollo acepta cualquier origen (file://, localhost:*)
-    : process.env.FRONTEND_URL,      // en producción solo el dominio configurado
+    ? (origin, cb) => cb(null, true)
+    : (origin, cb) => {
+        const isLocalhost = origin && /^http:\/\/localhost(:\d+)?$/.test(origin);
+        if (!origin || isLocalhost || allowedOrigins.includes(origin)) return cb(null, true);
+        cb(new Error(`CORS: origen no permitido — ${origin}`));
+      },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
