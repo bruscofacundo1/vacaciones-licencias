@@ -1,240 +1,333 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es-AR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GerenciAndo Canales — Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
 <style>
-  :root {
-    --bg:#0e0a17;--bg2:#160f24;--bg3:#1e1530;
-    --card:#1a1228;--card2:#221a34;
-    --border:rgba(124,58,173,0.25);--border2:rgba(124,58,173,0.5);
-    --purple:#7c3aad;--accent:#b344e0;--pale:#c49de0;
-    --text:#f0e8ff;--text2:#b8a8d4;--text3:#7a6896;
-    --green:#34d399;--green-bg:rgba(52,211,153,0.1);
-    --yellow:#fbbf24;--yellow-bg:rgba(251,191,36,0.1);
-    --red:#f87171;--red-bg:rgba(248,113,113,0.1);
-    --blue:#60a5fa;--blue-bg:rgba(96,165,250,0.1);
-  }
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
-  body::before{content:'';position:fixed;top:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(124,58,173,0.12),transparent 70%);pointer-events:none;z-index:0;}
-  .sidebar{position:fixed;left:0;top:0;bottom:0;width:240px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100;}
-  .sidebar-logo{padding:22px 20px;border-bottom:1px solid var(--border);}
-  .logo-mark{display:flex;align-items:center;gap:10px;}
-  .logo-bars{display:flex;gap:3px;align-items:flex-end;}
-  .logo-bars span{display:block;width:4px;border-radius:2px;background:linear-gradient(180deg,#b344e0,#7c3aad);}
-  .logo-bars span:nth-child(1){height:14px;}.logo-bars span:nth-child(2){height:20px;}.logo-bars span:nth-child(3){height:16px;}.logo-bars span:nth-child(4){height:24px;}.logo-bars span:nth-child(5){height:18px;}
-  .logo-text{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;line-height:1.1;}
-  .logo-text strong{color:var(--pale);display:block;}.logo-text em{font-style:normal;color:var(--text3);font-size:11px;font-weight:400;}
-  .sb-sec{padding:6px 16px;margin-top:6px;}
-  .sb-sec span{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);}
-  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 18px;font-size:13px;color:var(--text3);cursor:pointer;border-radius:8px;margin:1px 8px;transition:all 0.2s;position:relative;user-select:none;}
-  .nav-item:hover{background:rgba(124,58,173,0.1);color:var(--text2);}
-  .nav-item.active{background:rgba(124,58,173,0.2);color:var(--pale);font-weight:500;}
-  .nav-item.active::before{content:'';position:absolute;left:-8px;top:50%;transform:translateY(-50%);width:3px;height:20px;background:linear-gradient(180deg,var(--accent),var(--purple));border-radius:2px;}
-  .nav-icon{font-size:15px;width:18px;text-align:center;}
-  .sidebar-bottom{margin-top:auto;padding:14px;border-top:1px solid var(--border);}
-  .user-card{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--card);border-radius:10px;border:1px solid var(--border);}
-  .user-av{width:32px;height:32px;background:linear-gradient(135deg,var(--purple),var(--accent));border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:white;flex-shrink:0;}
-  .user-name{font-size:12px;font-weight:500;color:var(--text2);}
-  .user-role-txt{font-size:11px;color:var(--text3);}
-  .logout-btn{margin-top:8px;width:100%;padding:7px;background:none;border:1px solid var(--border);border-radius:8px;color:var(--text3);font-size:12px;cursor:pointer;transition:all 0.2s;font-family:'DM Sans',sans-serif;}
-  .logout-btn:hover{border-color:var(--red);color:var(--red);}
-  .main{margin-left:240px;min-height:100vh;position:relative;z-index:1;}
-  .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;border-bottom:1px solid var(--border);background:rgba(14,10,23,0.85);backdrop-filter:blur(10px);position:sticky;top:0;z-index:50;}
-  .topbar-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;}
-  .topbar-sub{font-size:12px;color:var(--text3);margin-top:1px;}
-  .topbar-right{display:flex;align-items:center;gap:8px;}
-  .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 15px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all 0.2s;white-space:nowrap;}
-  .btn-primary{background:linear-gradient(135deg,var(--purple),var(--accent));color:white;box-shadow:0 4px 15px rgba(124,58,173,0.3);}
-  .btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,58,173,0.45);}
-  .btn-primary:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
-  .btn-ghost{background:var(--card);color:var(--text2);border:1px solid var(--border);}
-  .btn-ghost:hover{border-color:var(--border2);color:var(--text);}
-  .search-box{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 12px;}
-  .search-box:focus-within{border-color:var(--border2);}
-  .search-box input{background:none;border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);width:150px;}
-  .search-box input::placeholder{color:var(--text3);}
-  .content{padding:22px 28px;}
-  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
-  .stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;position:relative;overflow:hidden;transition:all 0.2s;animation:fadeUp 0.4s ease both;}
-  .stat-card:hover{border-color:var(--border2);transform:translateY(-2px);}
-  .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
-  .s-purple::before{background:linear-gradient(90deg,var(--purple),var(--accent));}.s-green::before{background:linear-gradient(90deg,#10b981,#34d399);}.s-yellow::before{background:linear-gradient(90deg,#f59e0b,#fbbf24);}.s-blue::before{background:linear-gradient(90deg,#3b82f6,#60a5fa);}
-  .stat-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:10px;}
-  .s-purple .stat-icon{background:rgba(124,58,173,0.2);}.s-green .stat-icon{background:rgba(52,211,153,0.15);}.s-yellow .stat-icon{background:rgba(251,191,36,0.15);}.s-blue .stat-icon{background:rgba(96,165,250,0.15);}
-  .stat-value{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;line-height:1;margin-bottom:3px;}
-  .stat-label{font-size:11px;color:var(--text3);}
-  .grid-layout{display:grid;grid-template-columns:1fr 290px;gap:16px;}
-  .table-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;animation:fadeUp 0.4s ease 0.15s both;}
-  .card-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);}
-  .card-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px;}
-  .card-dot{width:6px;height:6px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--accent));}
-  .filter-tabs{display:flex;gap:2px;background:var(--bg2);border-radius:7px;padding:3px;}
-  .ftab{padding:4px 10px;font-size:11px;font-weight:500;border-radius:5px;cursor:pointer;color:var(--text3);transition:all 0.15s;}
-  .ftab.active{background:var(--card2);color:var(--pale);}
-  table{width:100%;border-collapse:collapse;}
-  thead th{padding:9px 18px;text-align:left;font-size:10px;font-weight:500;letter-spacing:0.8px;text-transform:uppercase;color:var(--text3);background:var(--bg2);border-bottom:1px solid var(--border);}
-  tbody tr{border-bottom:1px solid rgba(124,58,173,0.08);transition:background 0.15s;}
-  tbody tr:hover{background:rgba(124,58,173,0.06);}
-  tbody tr:last-child{border-bottom:none;}
-  td{padding:11px 18px;font-size:13px;}
-  .emp-cell{display:flex;align-items:center;gap:9px;}
-  .emp-av-sm{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:white;flex-shrink:0;}
-  .emp-name{font-weight:500;font-size:13px;}.emp-area{font-size:11px;color:var(--text3);}
-  .bar-wrap{display:flex;align-items:center;gap:7px;}
-  .bar-bg{flex:1;height:4px;background:rgba(124,58,173,0.15);border-radius:10px;overflow:hidden;min-width:40px;}
-  .bar-fill{height:100%;border-radius:10px;}
-  .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:500;}
-  .b-dot{width:5px;height:5px;border-radius:50%;}
-  .b-green{background:var(--green-bg);color:var(--green);}.b-green .b-dot{background:var(--green);}
-  .b-yellow{background:var(--yellow-bg);color:var(--yellow);}.b-yellow .b-dot{background:var(--yellow);}
-  .b-red{background:var(--red-bg);color:var(--red);}.b-red .b-dot{background:var(--red);}
-  .b-blue{background:var(--blue-bg);color:var(--blue);}.b-blue .b-dot{background:var(--blue);}
-  .b-purple{background:rgba(124,58,173,0.15);color:var(--pale);}.b-purple .b-dot{background:var(--pale);}
-  .side-panel{display:flex;flex-direction:column;gap:12px;}
-  .panel-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;animation:fadeUp 0.4s ease 0.25s both;}
-  .panel-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:600;margin-bottom:10px;}
-  .pending-item{padding:9px 0;border-bottom:1px solid rgba(124,58,173,0.1);}
-  .pending-item:last-child{border-bottom:none;padding-bottom:0;}
-  .pending-name{font-size:13px;font-weight:500;color:var(--text2);}
-  .pending-detail{font-size:11px;color:var(--text3);margin-top:1px;}
-  .pa{display:flex;gap:5px;margin-top:7px;}
-  .act-btn{flex:1;padding:5px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
-  .a-approve{background:rgba(52,211,153,0.15);color:var(--green);}.a-approve:hover{background:rgba(52,211,153,0.25);}
-  .a-reject{background:rgba(248,113,113,0.1);color:var(--red);}.a-reject:hover{background:rgba(248,113,113,0.2);}
-  .a-sign{background:rgba(124,58,173,0.2);color:var(--pale);}.a-sign:hover{background:rgba(124,58,173,0.3);}
-  /* FERIADOS */
-  .feriados-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-top:14px;}
-  .feriado-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;justify-content:space-between;align-items:flex-start;animation:fadeUp 0.3s ease both;}
-  .feriado-fecha{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--pale);}
-  .feriado-nombre{font-size:11px;color:var(--text2);margin-top:2px;}
-  .feriado-tipo{font-size:10px;padding:2px 7px;border-radius:20px;background:rgba(124,58,173,0.15);color:var(--pale);font-weight:500;}
-  .feriado-del{font-size:11px;color:var(--text3);cursor:pointer;opacity:0;transition:opacity 0.15s;padding:2px 6px;border-radius:4px;margin-top:4px;}
-  .feriado-card:hover .feriado-del{opacity:1;}
-  .feriado-del:hover{background:var(--red-bg);color:var(--red);}
-  .sync-banner{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.15);border-radius:10px;margin-bottom:4px;}
-  .sync-info{font-size:12px;color:var(--text2);}
-  .sync-info span{font-size:11px;color:var(--text3);display:block;margin-top:1px;}
-  /* EMPLEADO */
-  .emp-view-wrap{padding:22px 28px;}
-  .saldo-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
-  .saldo-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center;}
-  .saldo-num{font-family:'Syne',sans-serif;font-size:30px;font-weight:700;margin-bottom:3px;}
-  .saldo-lbl{font-size:11px;color:var(--text3);}
-  .info-banner{padding:11px 14px;background:rgba(124,58,173,0.08);border:1px solid var(--border);border-radius:9px;font-size:13px;color:var(--text2);margin-bottom:14px;}
-  /* LOADING */
-  .loading-wrap{display:flex;align-items:center;justify-content:center;height:100vh;gap:10px;color:var(--text3);}
-  .spinner{display:inline-block;width:18px;height:18px;border:2px solid rgba(124,58,173,0.3);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;}
-  @keyframes spin{to{transform:rotate(360deg);}}
-  /* MODAL */
-  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s;}
-  .modal-overlay.open{opacity:1;pointer-events:all;}
-  .modal{background:var(--card2);border:1px solid var(--border2);border-radius:18px;padding:26px;width:460px;max-width:95vw;transform:scale(0.95) translateY(10px);transition:transform 0.25s;box-shadow:0 24px 60px rgba(0,0,0,0.5);}
-  .modal-overlay.open .modal{transform:scale(1) translateY(0);}
-  .modal-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:3px;}
-  .modal-sub{font-size:12px;color:var(--text3);margin-bottom:18px;}
-  .form-row{margin-bottom:13px;}
-  .form-label{font-size:11px;color:var(--text3);margin-bottom:5px;display:block;font-weight:500;}
-  .form-input,.form-select{width:100%;padding:9px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color 0.2s;}
-  .form-input:focus,.form-select:focus{border-color:var(--border2);}
-  .form-select option{background:var(--bg2);}
-  .form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-  .preview-days{margin-top:12px;padding:11px 14px;background:rgba(124,58,173,0.1);border:1px solid var(--border);border-radius:9px;display:flex;justify-content:space-between;align-items:center;}
-  .preview-label{font-size:11px;color:var(--text3);}
-  .preview-value{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--pale);}
-  .modal-actions{display:flex;gap:8px;margin-top:18px;}
-  .modal-actions .btn{flex:1;justify-content:center;}
-  .firma-wrap{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:10px;background:#fff;}
-  #firma-canvas-admin,#firma-canvas-emp{display:block;width:100%;height:150px;cursor:crosshair;}
-  .firma-clear{font-size:12px;color:var(--text3);cursor:pointer;background:none;border:none;padding:0;text-decoration:underline;font-family:'DM Sans',sans-serif;}
-  .firma-clear:hover{color:var(--text2);}
-  .toast{position:fixed;bottom:22px;right:22px;padding:11px 16px;border-radius:10px;font-size:13px;font-weight:500;z-index:999;transform:translateY(80px);opacity:0;transition:all 0.3s;display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,0.3);}
-  .toast.show{transform:translateY(0);opacity:1;}
-  .toast.success{background:#064e3b;border:1px solid #065f46;color:#34d399;}
-  .toast.error{background:#450a0a;border:1px solid #7f1d1d;color:#f87171;}
-  .toast.info{background:#1e3a5f;border:1px solid #1e40af;color:#60a5fa;}
-  @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
-</style>
-<script src="config.js"></script></head>
-<body>
-<aside class="sidebar">
-  <div class="sidebar-logo">
-    <div class="logo-mark">
-      <div class="logo-bars"><span></span><span></span><span></span><span></span><span></span></div>
-      <div class="logo-text"><strong>GerenciAndo</strong><em>Canales</em></div>
-    </div>
-  </div>
-  <div id="sidebar-nav"></div>
-  <div class="sidebar-bottom">
-    <div class="user-card">
-      <div class="user-av" id="user-av">?</div>
-      <div><div class="user-name" id="user-name">...</div><div class="user-role-txt" id="user-role"></div></div>
-    </div>
-    <button class="logout-btn" onclick="logout()">Cerrar sesión</button>
-  </div>
-</aside>
-<main class="main" id="main-content">
-  <div class="loading-wrap"><div class="spinner"></div> Cargando...</div>
-</main>
+:root {
+  --bg:#fafafa; --bg-2:#ffffff; --bg-3:#f4f4f4;
+  --ink:#1a1a1a; --ink-2:#3a3a3a;
+  --muted:#888; --muted-2:#b5b5b5;
+  --line:#e5e5e5; --line-2:#eeeeee;
+  --ok:#1f7a3f; --ok-bg:#e8f3ec;
+  --warn:#8a6a00; --warn-bg:#fbf3d7;
+  --bad:#a2261c; --bad-bg:#fae8e6;
+  --info:#1e4b82; --info-bg:#e6eef8;
+  --radius:6px; --radius-lg:10px;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.04);
+  --shadow:0 4px 16px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --shadow-lg:0 20px 50px rgba(0,0,0,.15),0 8px 16px rgba(0,0,0,.08);
+  --sans:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,'SF Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit;}
+input,select,textarea{font-family:inherit;font-size:inherit;color:inherit;}
+a{color:inherit;text-decoration:none;}
+.mono{font-family:var(--mono);}
 
-<!-- MODAL LICENCIA -->
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 14px;border-radius:var(--radius);font-size:13px;font-weight:500;border:1px solid var(--line);background:var(--bg-2);color:var(--ink);transition:all .12s;white-space:nowrap;cursor:pointer;}
+.btn:hover{background:var(--bg-3);border-color:var(--muted-2);}
+.btn-primary{background:var(--ink);color:#fff;border-color:var(--ink);}
+.btn-primary:hover{background:#000;border-color:#000;}
+.btn-primary:disabled{opacity:.55;cursor:not-allowed;}
+.btn-ghost{border-color:transparent;background:transparent;}
+.btn-ghost:hover{background:var(--bg-3);}
+.btn-sm{height:28px;padding:0 10px;font-size:12px;}
+.btn-danger{color:var(--bad);}
+.btn-danger:hover{background:var(--bad-bg);border-color:var(--bad);}
+.btn-ok{color:var(--ok);}
+.btn-ok:hover{background:var(--ok-bg);border-color:var(--ok);}
+
+/* Inputs */
+.input,.form-input,.select,.form-select{width:100%;height:38px;padding:0 12px;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg-2);font-size:13px;transition:all .12s;}
+.textarea{width:100%;padding:10px 12px;min-height:72px;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg-2);font-size:13px;resize:vertical;}
+.input:focus,.form-input:focus,.select:focus,.form-select:focus,.textarea:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(0,0,0,.05);}
+.form-label{font-size:12px;font-weight:500;color:var(--ink-2);display:block;margin-bottom:6px;}
+.field{display:flex;flex-direction:column;gap:6px;}
+.field label{font-size:12px;font-weight:500;color:var(--ink-2);}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 8px;font-size:11px;font-weight:500;border-radius:999px;background:var(--bg-3);color:var(--ink-2);white-space:nowrap;}
+.badge .dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;}
+.badge-ok{background:var(--ok-bg);color:var(--ok);}
+.badge-warn{background:var(--warn-bg);color:var(--warn);}
+.badge-bad{background:var(--bad-bg);color:var(--bad);}
+.badge-info{background:var(--info-bg);color:var(--info);}
+.badge-neutral{background:var(--bg-3);color:var(--ink-2);}
+
+/* Cards */
+.card{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius-lg);}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--line-2);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.card-header h3{margin:0;font-size:14px;font-weight:600;letter-spacing:-.01em;}
+.card-header .sub{font-size:12px;color:var(--muted);margin-top:2px;}
+
+/* Tables */
+.table{width:100%;border-collapse:collapse;font-size:13px;}
+.table th{text-align:left;font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:10px 16px;border-bottom:1px solid var(--line);background:var(--bg-3);}
+.table td{padding:12px 16px;border-bottom:1px solid var(--line-2);vertical-align:middle;}
+.table tbody tr:hover{background:var(--bg-3);}
+.table tbody tr:last-child td{border-bottom:none;}
+
+/* Avatar */
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--ink);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;letter-spacing:.02em;flex-shrink:0;}
+.avatar-sm{width:28px;height:28px;font-size:10px;}
+
+/* App layout */
+.app{display:grid;grid-template-columns:232px 1fr;min-height:100vh;}
+.sidebar{background:var(--ink);color:#e5e5e5;padding:20px 14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.logo{display:flex;align-items:center;gap:10px;padding:4px 10px 22px;color:#fff;}
+.logo-mark{width:28px;height:28px;background:#fff;color:var(--ink);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;border-radius:4px;}
+.logo-text{font-size:13px;font-weight:600;letter-spacing:-.01em;line-height:1.1;}
+.logo-text small{display:block;font-size:10px;font-weight:400;color:#888;letter-spacing:.04em;text-transform:uppercase;margin-top:2px;}
+.nav-section{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:#666;padding:16px 12px 6px;font-weight:500;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:5px;font-size:13px;color:#bbb;cursor:pointer;transition:all .1s;font-weight:500;width:100%;text-align:left;border:none;background:none;font-family:inherit;}
+.nav-item:hover{background:#2a2a2a;color:#fff;}
+.nav-item.active{background:#fff;color:var(--ink);}
+.nav-item .nav-count{margin-left:auto;font-size:11px;color:#888;font-family:var(--mono);}
+.nav-item.active .nav-count{color:var(--muted);}
+.sidebar-footer{margin-top:auto;padding:12px;border-top:1px solid #2a2a2a;display:flex;align-items:center;gap:8px;}
+.profile-btn{display:flex;align-items:center;gap:10px;flex:1;min-width:0;padding:6px 8px;margin:-6px -8px;border-radius:6px;transition:background .12s;text-align:left;cursor:pointer;background:none;border:none;font-family:inherit;}
+.profile-btn:hover{background:#2a2a2a;}
+.profile-btn .avatar{background:#fff;color:var(--ink);}
+.profile-btn .user-info{font-size:12px;line-height:1.2;overflow:hidden;}
+.profile-btn .user-info strong{color:#fff;font-weight:500;display:block;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;}
+.profile-btn .user-info small{color:#888;font-size:11px;}
+.logout-btn-icon{padding:8px;color:#888;flex-shrink:0;}
+.logout-btn-icon:hover{color:#fff;}
+
+/* Main */
+.main{min-width:0;display:flex;flex-direction:column;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 32px;border-bottom:1px solid var(--line);background:var(--bg-2);gap:16px;flex-wrap:wrap;}
+.topbar h1{margin:0;font-size:20px;font-weight:600;letter-spacing:-.02em;}
+.topbar .breadcrumb{font-size:12px;color:var(--muted);margin-bottom:2px;}
+.topbar .topbar-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.search{position:relative;width:230px;}
+.search input{width:100%;height:34px;padding:0 12px 0 32px;border:1px solid var(--line);border-radius:var(--radius);background:var(--bg);font-size:13px;font-family:var(--sans);}
+.search input:focus{outline:none;border-color:var(--ink);background:#fff;}
+.search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;}
+.content{padding:28px 32px;flex:1;}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.stat{padding:18px 20px;background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius-lg);}
+.stat .label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:500;}
+.stat .value{font-size:32px;font-weight:600;letter-spacing:-.03em;margin-top:6px;font-family:var(--mono);}
+.stat .value small{font-size:14px;color:var(--muted);font-weight:400;margin-left:4px;}
+.stat .trend{font-size:11px;color:var(--muted);margin-top:8px;}
+.stat .trend a{color:var(--ink);text-decoration:underline;text-underline-offset:2px;cursor:pointer;}
+
+/* Dashboard layout */
+.dashboard-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;}
+
+/* Progress */
+.progress{height:5px;background:var(--bg-3);border-radius:999px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--ink);border-radius:999px;transition:width .4s;}
+.progress-fill.warn{background:var(--warn);}
+.progress-fill.bad{background:var(--bad);}
+
+/* Employee row (side panels) */
+.employee-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line-2);}
+.employee-row:last-child{border-bottom:none;}
+.employee-row .info{flex:1;min-width:0;}
+.employee-row .info strong{font-size:13px;font-weight:500;display:block;}
+.employee-row .info small{font-size:11px;color:var(--muted);}
+
+/* Tabs */
+.tabs{display:inline-flex;padding:3px;background:var(--bg-3);border-radius:var(--radius);gap:2px;}
+.tabs button{padding:5px 10px;border-radius:4px;font-size:12px;font-weight:500;color:var(--muted);transition:all .12s;background:none;border:none;cursor:pointer;font-family:inherit;}
+.tabs button.active{background:var(--bg-2);color:var(--ink);box-shadow:var(--shadow-sm);}
+.filter-row{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.filter-row .spacer{flex:1;}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(20,20,20,.45);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px;opacity:0;pointer-events:none;transition:opacity .15s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:var(--bg-2);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);width:100%;max-width:520px;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;transform:translateY(10px);transition:transform .18s;}
+.modal-overlay.open .modal{transform:translateY(0);}
+.modal-header{padding:18px 22px;border-bottom:1px solid var(--line-2);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.modal-header h2{margin:0;font-size:16px;font-weight:600;letter-spacing:-.01em;}
+.modal-header .sub{font-size:12px;color:var(--muted);margin-top:3px;}
+.modal-header .close-x{color:var(--muted);font-size:20px;line-height:1;padding:0;background:none;border:none;cursor:pointer;flex-shrink:0;}
+.modal-header .close-x:hover{color:var(--ink);}
+.modal-body{padding:22px;overflow-y:auto;flex:1;}
+.modal-footer{padding:14px 22px;border-top:1px solid var(--line-2);display:flex;justify-content:flex-end;gap:8px;background:var(--bg-3);}
+.form-row{margin-bottom:14px;}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+/* Preview days */
+.preview-days{margin-top:14px;padding:14px 16px;background:var(--bg-3);border:1px solid var(--line);border-radius:var(--radius);display:flex;justify-content:space-between;align-items:center;}
+.preview-value{font-size:28px;font-weight:600;font-family:var(--mono);color:var(--ink);}
+
+/* Firma */
+.firma-wrap{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-bottom:10px;background:#fff;}
+#firma-canvas-admin,#firma-canvas-emp{display:block;width:100%;height:150px;cursor:crosshair;}
+.firma-clear{font-size:12px;color:var(--muted);cursor:pointer;background:none;border:none;padding:0;text-decoration:underline;font-family:var(--sans);}
+.firma-clear:hover{color:var(--ink);}
+
+/* Toast */
+.toast{position:fixed;bottom:22px;right:22px;display:flex;align-items:center;gap:8px;padding:11px 16px;border-radius:var(--radius-lg);font-size:13px;font-weight:500;z-index:999;transform:translateY(80px);opacity:0;transition:all .3s;max-width:340px;box-shadow:var(--shadow-lg);}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{background:var(--ok-bg);border:1px solid rgba(31,122,63,.25);color:var(--ok);}
+.toast.error{background:var(--bad-bg);border:1px solid rgba(162,38,28,.25);color:var(--bad);}
+.toast.info{background:var(--info-bg);border:1px solid rgba(30,75,130,.25);color:var(--info);}
+
+/* Loading */
+.loading-wrap{display:flex;align-items:center;justify-content:center;height:200px;gap:10px;color:var(--muted);font-size:13px;}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--line);border-top-color:var(--ink);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* Saldo cards */
+.saldo-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;}
+.saldo-card{padding:20px;background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius-lg);text-align:center;}
+.saldo-num{font-family:var(--mono);font-size:36px;font-weight:600;letter-spacing:-.03em;margin-bottom:4px;}
+.saldo-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:500;}
+
+/* Info banner */
+.info-banner{padding:11px 14px;background:var(--bg-3);border:1px solid var(--line);border-radius:var(--radius);font-size:13px;color:var(--ink-2);}
+
+/* Feriados */
+.feriados-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
+.sync-banner{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--ok-bg);border:1px solid rgba(31,122,63,.2);border-radius:var(--radius);margin-bottom:16px;font-size:13px;color:var(--ok);}
+.sync-banner small{display:block;font-size:11px;opacity:.75;margin-top:2px;}
+
+/* Calendar */
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;background:var(--bg-2);}
+.cal-dow{padding:9px 6px;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:var(--bg-3);border-bottom:1px solid var(--line);text-align:center;}
+.cal-day{min-height:76px;padding:7px 8px;border-right:1px solid var(--line-2);border-bottom:1px solid var(--line-2);background:var(--bg-2);}
+.cal-day.holiday{background:var(--warn-bg);}
+.cal-day .cal-num{width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:500;border-radius:50%;}
+.cal-day.today .cal-num{background:var(--ink);color:#fff;}
+.cal-ev{font-size:10px;padding:2px 5px;border-radius:3px;margin-top:3px;font-weight:500;background:var(--warn-bg);color:var(--warn);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+</style>
+<script src="config.js"></script>
+</head>
+<body>
+
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-mark">GC</div>
+      <div class="logo-text">Gerenciando Canales<small>Licencias</small></div>
+    </div>
+    <div id="sidebar-nav"></div>
+    <div class="sidebar-footer">
+      <button class="profile-btn" id="profile-btn">
+        <div class="avatar" id="user-av">?</div>
+        <div class="user-info">
+          <strong id="user-name">Cargando...</strong>
+          <small id="user-role"></small>
+        </div>
+      </button>
+      <button class="btn-ghost logout-btn-icon" onclick="logout()" title="Cerrar sesión">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main" id="main-content">
+    <div class="loading-wrap"><div class="spinner"></div> Cargando...</div>
+  </main>
+</div>
+
+<!-- Modal: Nueva licencia -->
 <div class="modal-overlay" id="modal-licencia" onclick="closeOut(event,'modal-licencia')">
   <div class="modal">
-    <div class="modal-title">Nueva licencia</div>
-    <div class="modal-sub">Completá los datos de la solicitud</div>
-    <div class="form-row"><label class="form-label">Empleado</label><select class="form-select" id="lic-emp"></select></div>
-    <div class="form-row"><label class="form-label">Tipo</label>
-      <select class="form-select" id="lic-tipo">
-        <option value="VACACIONES">Vacaciones</option>
-        <option value="PERMISO">Permiso</option>
-        <option value="LICENCIA_MEDICA">Licencia médica</option>
-        <option value="AUSENCIA">Ausencia</option>
-      </select>
+    <div class="modal-header">
+      <div><h2>Nueva licencia</h2><div class="sub">Completá los datos de la solicitud</div></div>
+      <button class="close-x" onclick="closeModal('modal-licencia')">×</button>
     </div>
-    <div class="form-row-2">
-      <div><label class="form-label">Fecha inicio</label><input type="date" class="form-input" id="lic-ini" oninput="calcPrev()"></div>
-      <div><label class="form-label">Fecha fin</label><input type="date" class="form-input" id="lic-fin" oninput="calcPrev()"></div>
+    <div class="modal-body">
+      <div class="form-row"><label class="form-label">Empleado</label><select class="form-select" id="lic-emp"></select></div>
+      <div class="form-row"><label class="form-label">Tipo</label>
+        <select class="form-select" id="lic-tipo">
+          <option value="VACACIONES">Vacaciones</option>
+          <option value="PERMISO">Permiso</option>
+          <option value="LICENCIA_MEDICA">Licencia médica</option>
+          <option value="AUSENCIA">Ausencia</option>
+        </select>
+      </div>
+      <div class="form-row form-row-2">
+        <div><label class="form-label">Fecha inicio</label><input type="date" class="form-input" id="lic-ini" oninput="calcPrev()"></div>
+        <div><label class="form-label">Fecha fin</label><input type="date" class="form-input" id="lic-fin" oninput="calcPrev()"></div>
+      </div>
+      <div class="form-row"><label class="form-label">Observaciones</label><input type="text" class="form-input" id="lic-obs" placeholder="Ej: turno médico 9hs"></div>
+      <div class="preview-days">
+        <div>
+          <div style="font-size:12px;font-weight:500;color:var(--ink-2)">Días hábiles calculados</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">Sin domingos ni feriados</div>
+        </div>
+        <div class="preview-value" id="prev-val">—</div>
+      </div>
     </div>
-    <div class="form-row" style="margin-top:12px"><label class="form-label">Observaciones</label><input type="text" class="form-input" id="lic-obs" placeholder="Ej: turno médico 9hs"></div>
-    <div class="preview-days">
-      <div><div class="preview-label">Días hábiles calculados</div><div style="font-size:10px;color:var(--text3);margin-top:2px">Sin domingos ni feriados</div></div>
-      <div class="preview-value" id="prev-val">—</div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal('modal-licencia')">Cancelar</button>
-      <button class="btn btn-primary" id="btn-guardar-lic" onclick="guardarLicencia()">Guardar</button>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-licencia')">Cancelar</button>
+      <button class="btn btn-primary" id="btn-guardar-lic" onclick="guardarLicencia()">Guardar licencia</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL FIRMA ADMIN -->
+<!-- Modal: Firma admin -->
 <div class="modal-overlay" id="modal-firma" onclick="closeOut(event,'modal-firma')">
   <div class="modal">
-    <div class="modal-title">✍️ Firma del responsable</div>
-    <div class="modal-sub" id="firma-sub-admin">Firmá para aprobar la licencia</div>
-    <div class="firma-wrap"><canvas id="firma-canvas-admin" width="400" height="150"></canvas></div>
-    <button class="firma-clear" onclick="sigAdmin&&sigAdmin.clear()">Limpiar firma</button>
-    <div class="modal-actions" style="margin-top:12px">
-      <button class="btn btn-ghost" onclick="closeModal('modal-firma')">Cancelar</button>
-      <button class="btn btn-primary" onclick="confirmarFirmaAdmin()">Confirmar</button>
+    <div class="modal-header">
+      <div><h2>Firma del responsable</h2><div class="sub" id="firma-sub-admin">Firmá para aprobar la licencia</div></div>
+      <button class="close-x" onclick="closeModal('modal-firma')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="firma-wrap"><canvas id="firma-canvas-admin" width="400" height="150"></canvas></div>
+      <button class="firma-clear" onclick="sigAdmin&&sigAdmin.clear()">Limpiar firma</button>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-firma')">Cancelar</button>
+      <button class="btn btn-primary" onclick="confirmarFirmaAdmin()">Confirmar firma</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL FIRMA EMPLEADO -->
+<!-- Modal: Firma empleado -->
 <div class="modal-overlay" id="modal-firma-emp" onclick="closeOut(event,'modal-firma-emp')">
   <div class="modal">
-    <div class="modal-title">✍️ Firma de conformidad</div>
-    <div class="modal-sub">Firmá para confirmar que tomaste la licencia</div>
-    <div class="firma-wrap"><canvas id="firma-canvas-emp" width="400" height="150"></canvas></div>
-    <button class="firma-clear" onclick="sigEmp&&sigEmp.clear()">Limpiar firma</button>
-    <div class="modal-actions" style="margin-top:12px">
-      <button class="btn btn-ghost" onclick="closeModal('modal-firma-emp')">Cancelar</button>
+    <div class="modal-header">
+      <div><h2>Firma de conformidad</h2><div class="sub">Confirmá que tomaste la licencia</div></div>
+      <button class="close-x" onclick="closeModal('modal-firma-emp')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="firma-wrap"><canvas id="firma-canvas-emp" width="400" height="150"></canvas></div>
+      <button class="firma-clear" onclick="sigEmp&&sigEmp.clear()">Limpiar firma</button>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-firma-emp')">Cancelar</button>
       <button class="btn btn-primary" onclick="confirmarFirmaEmp()">Confirmar conformidad</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Cambiar contraseña -->
+<div class="modal-overlay" id="modal-pass" onclick="closeOut(event,'modal-pass')">
+  <div class="modal">
+    <div class="modal-header">
+      <div><h2>Cambiar contraseña</h2><div class="sub">Ingresá tu contraseña actual y la nueva</div></div>
+      <button class="close-x" onclick="closeModal('modal-pass')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row"><label class="form-label">Contraseña actual</label><input type="password" class="form-input" id="pass-actual" placeholder="••••••••"></div>
+      <div class="form-row"><label class="form-label">Nueva contraseña</label><input type="password" class="form-input" id="pass-nueva" placeholder="Mínimo 6 caracteres"></div>
+      <div class="form-row"><label class="form-label">Repetir nueva contraseña</label><input type="password" class="form-input" id="pass-confirm" placeholder="••••••••"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('modal-pass')">Cancelar</button>
+      <button class="btn btn-primary" onclick="cambiarPassword()">Guardar contraseña</button>
     </div>
   </div>
 </div>
@@ -242,599 +335,714 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const API=window.API_URL;
-let token=sessionStorage.getItem('token');
-let usuario=JSON.parse(sessionStorage.getItem('usuario')||'null');
-let empleados=[],feriados=[],licFirmandoId=null,sigAdmin=null,sigEmp=null;
+const API = window.API_URL;
+let token   = sessionStorage.getItem('token');
+let usuario = JSON.parse(sessionStorage.getItem('usuario') || 'null');
+let empleados = [], feriados = [], licFirmandoId = null, sigAdmin = null, sigEmp = null;
 
-if(!token||!usuario)window.location.href='login.html';
-const H=()=>({'Content-Type':'application/json','Authorization':`Bearer ${token}`});
-function logout(){sessionStorage.clear();window.location.href='login.html';}
+if (!token || !usuario) window.location.href = 'login.html';
+const H = () => ({ 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` });
+function logout() { sessionStorage.clear(); window.location.href = 'login.html'; }
 
-document.addEventListener('DOMContentLoaded',async()=>{
-  const ini=usuario.empleado?`${usuario.empleado.nombre[0]}${usuario.empleado.apellido?.[0]||''}`:usuario.email[0].toUpperCase();
-  document.getElementById('user-av').textContent=ini;
-  document.getElementById('user-name').textContent=usuario.empleado?`${usuario.empleado.nombre} ${usuario.empleado.apellido||''}`.trim():usuario.email;
-  document.getElementById('user-role').textContent=usuario.rol==='ADMIN'?'Administrador · RRHH':`Empleado · ${usuario.empleado?.area||''}`;
+document.addEventListener('DOMContentLoaded', async () => {
+  const ini = usuario.empleado
+    ? `${usuario.empleado.nombre[0]}${usuario.empleado.apellido?.[0] || ''}`
+    : usuario.email[0].toUpperCase();
+  document.getElementById('user-av').textContent   = ini;
+  document.getElementById('user-name').textContent = usuario.empleado
+    ? `${usuario.empleado.nombre} ${usuario.empleado.apellido || ''}`.trim()
+    : usuario.email;
+  document.getElementById('user-role').textContent = usuario.rol === 'ADMIN'
+    ? 'Administrador · RRHH'
+    : `Empleado · ${usuario.empleado?.area || ''}`;
+
   renderNav();
-  try{const r=await fetch(`${API}/feriados?anio=${new Date().getFullYear()}`,{headers:H()});const d=await r.json();feriados=Array.isArray(d)?d.map(f=>f.fecha.split('T')[0]):[];}catch(e){}
-  usuario.rol==='ADMIN'?cargarAdmin():cargarEmpleado();
+
+  try {
+    const r = await fetch(`${API}/feriados?anio=${new Date().getFullYear()}`, { headers: H() });
+    const d = await r.json();
+    feriados = Array.isArray(d) ? d.map(f => f.fecha.split('T')[0]) : [];
+  } catch (e) {}
+
+  usuario.rol === 'ADMIN' ? cargarAdmin() : cargarEmpleado();
 });
 
-function renderNav(){
-  const a=usuario.rol==='ADMIN';
-  document.getElementById('sidebar-nav').innerHTML=`
-    <div class="sb-sec"><span>Principal</span></div>
-    <div class="nav-item active" onclick="navTo('dashboard',this)"><span class="nav-icon">⬛</span> ${a?'Dashboard':'Mi panel'}</div>
-    ${a?`
-    <div class="nav-item" onclick="window.location.href='empleados.html'"><span class="nav-icon">👥</span> Empleados</div>
-    <div class="nav-item" onclick="window.location.href='usuarios.html'"><span class="nav-icon">🔐</span> Usuarios</div>
-    <div class="nav-item" onclick="navTo('licencias',this)"><span class="nav-icon">📋</span> Licencias</div>
-    <div class="sb-sec"><span>Configuración</span></div>
-    <div class="nav-item" onclick="navTo('feriados',this)"><span class="nav-icon">🗓</span> Feriados</div>
-    `:`<div class="nav-item" onclick="navTo('mis-licencias',this)"><span class="nav-icon">📋</span> Mis licencias</div>`}`;
+// SVG icons
+const ic = {
+  dashboard: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>`,
+  users:     `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+  lock:      `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`,
+  shield:    `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+  calendar:  `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
+  search:    `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
+  download:  `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`,
+  plus:      `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
+  sync:      `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>`,
+};
+
+function renderNav() {
+  const a = usuario.rol === 'ADMIN';
+  document.getElementById('sidebar-nav').innerHTML = `
+    <div class="nav-section">${a ? 'Panel' : 'Mi cuenta'}</div>
+    <button class="nav-item active" onclick="navTo('dashboard',this)">${ic.dashboard} ${a ? 'Dashboard' : 'Mi panel'}</button>
+    ${a ? `
+    <button class="nav-item" onclick="window.location.href='empleados.html'">${ic.users} Empleados</button>
+    <button class="nav-item" onclick="window.location.href='usuarios.html'">${ic.lock} Usuarios</button>
+    <button class="nav-item" onclick="navTo('licencias',this)">${ic.shield} Licencias</button>
+    <div class="nav-section">Configuración</div>
+    <button class="nav-item" onclick="navTo('feriados',this)">${ic.calendar} Feriados</button>
+    ` : `
+    <button class="nav-item" onclick="navTo('mis-licencias',this)">${ic.shield} Mis licencias</button>
+    `}`;
 }
 
-function navTo(p,el){
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+function navTo(p, el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   el.classList.add('active');
-  if(usuario.rol==='ADMIN'){if(p==='dashboard')cargarAdmin();else if(p==='feriados')cargarFeriados();else if(p==='licencias')cargarTodasLicencias();else if(p==='usuarios')cargarUsuarios();}
-  else cargarEmpleado();
+  if (usuario.rol === 'ADMIN') {
+    if (p === 'dashboard') cargarAdmin();
+    else if (p === 'feriados') cargarFeriados();
+    else if (p === 'licencias') cargarTodasLicencias();
+  } else {
+    cargarEmpleado();
+  }
 }
 
-async function cargarAdmin(){
-  const main=document.getElementById('main-content');
-  main.innerHTML=`<div class="loading-wrap"><div class="spinner"></div> Cargando...</div>`;
-  const anio=new Date().getFullYear();
-  const[empRes,pendRes,todasRes]=await Promise.all([
-    fetch(`${API}/empleados`,{headers:H()}),
-    fetch(`${API}/licencias?estado=PENDIENTE`,{headers:H()}),
-    fetch(`${API}/licencias?anio=${anio}`,{headers:H()})
+// ─── ADMIN DASHBOARD ────────────────────────────────────────────────────────
+async function cargarAdmin() {
+  const main = document.getElementById('main-content');
+  main.innerHTML = `<div class="loading-wrap"><div class="spinner"></div> Cargando...</div>`;
+  const anio = new Date().getFullYear();
+  const [empRes, pendRes, todasRes] = await Promise.all([
+    fetch(`${API}/empleados`, { headers: H() }),
+    fetch(`${API}/licencias?estado=PENDIENTE`, { headers: H() }),
+    fetch(`${API}/licencias?anio=${anio}`, { headers: H() }),
   ]);
-  empleados=await empRes.json();
-  const pendientes=await pendRes.json();
-  const todas=await todasRes.json();
-  document.getElementById('lic-emp').innerHTML=empleados.map(e=>`<option value="${e.id}">${e.nombre} ${e.apellido}</option>`).join('');
-  const hoy=new Date().toISOString().split('T')[0];
-  const ausentes=todas.filter(l=>l.estado!=='RECHAZADA'&&l.fechaInicio.split('T')[0]<=hoy&&l.fechaFin.split('T')[0]>=hoy);
-  const paraFirmar=todas.filter(l=>l.estado==='APROBADA'&&!l.firma);
-  window.ausentesIds=new Set(ausentes.map(l=>l.empleadoId));
-  main.innerHTML=`
+  empleados  = await empRes.json();
+  const pendientes = await pendRes.json();
+  const todas      = await todasRes.json();
+
+  document.getElementById('lic-emp').innerHTML = empleados
+    .map(e => `<option value="${e.id}">${e.nombre} ${e.apellido}</option>`).join('');
+
+  const hoy       = new Date().toISOString().split('T')[0];
+  const ausentes  = todas.filter(l => l.estado !== 'RECHAZADA' && l.fechaInicio.split('T')[0] <= hoy && l.fechaFin.split('T')[0] >= hoy);
+  const paraFirmar = todas.filter(l => l.estado === 'APROBADA' && !l.firma);
+  window.ausentesIds = new Set(ausentes.map(l => l.empleadoId));
+
+  main.innerHTML = `
     <div class="topbar">
-      <div><div class="topbar-title">Dashboard</div><div class="topbar-sub">${new Date().toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div></div>
-      <div class="topbar-right">
-        <div class="search-box"><span>🔍</span><input type="text" placeholder="Buscar empleado..." oninput="filtrarTabla(this.value)"></div>
-        <button class="btn btn-ghost" onclick="exportarCSV()">📤 CSV</button>
-        <button class="btn btn-primary" onclick="openModal('modal-licencia')">+ Nueva licencia</button>
+      <div>
+        <div class="breadcrumb">Inicio</div>
+        <h1>Dashboard</h1>
+      </div>
+      <div class="topbar-actions">
+        <div class="search">
+          ${ic.search}
+          <input type="text" placeholder="Buscar empleado..." oninput="filtrarTabla(this.value)">
+        </div>
+        <button class="btn" onclick="exportarCSV()">${ic.download} CSV</button>
+        <button class="btn btn-primary" onclick="openModal('modal-licencia')">${ic.plus} Nueva licencia</button>
       </div>
     </div>
     <div class="content">
       <div class="stats-grid">
-        <div class="stat-card s-purple" style="animation-delay:.05s"><div class="stat-icon">👥</div><div class="stat-value">${empleados.length}</div><div class="stat-label">Empleados activos</div></div>
-        <div class="stat-card s-green" style="animation-delay:.1s"><div class="stat-icon">✅</div><div class="stat-value">${todas.filter(l=>l.estado==='APROBADA'||l.estado==='CUMPLIDA').length}</div><div class="stat-label">Licencias aprobadas</div></div>
-        <div class="stat-card s-yellow" style="animation-delay:.15s"><div class="stat-icon">⏳</div><div class="stat-value">${pendientes.length}</div><div class="stat-label">Pendientes</div></div>
-        <div class="stat-card s-blue" style="animation-delay:.2s"><div class="stat-icon">📆</div><div class="stat-value">${ausentes.length}</div><div class="stat-label">Ausentes hoy</div></div>
+        <div class="stat">
+          <div class="label">Empleados activos</div>
+          <div class="value">${empleados.length}</div>
+        </div>
+        <div class="stat">
+          <div class="label">Licencias aprobadas · ${anio}</div>
+          <div class="value">${todas.filter(l => l.estado === 'APROBADA' || l.estado === 'CUMPLIDA').length}</div>
+        </div>
+        <div class="stat">
+          <div class="label">Pendientes de aprobación</div>
+          <div class="value">${pendientes.length}</div>
+          ${pendientes.length > 0 ? `<div class="trend"><a onclick="navTo('licencias',document.querySelector('.nav-item.active'))">Revisar pendientes →</a></div>` : ''}
+        </div>
+        <div class="stat">
+          <div class="label">Ausentes hoy</div>
+          <div class="value">${ausentes.length}</div>
+          <div class="trend">${new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' })}</div>
+        </div>
       </div>
-      <div class="grid-layout">
-        <div class="table-card">
+
+      <div class="dashboard-grid">
+        <div class="card" style="overflow:hidden">
           <div class="card-header">
-            <div class="card-title"><div class="card-dot"></div> Empleados — saldo ${anio}</div>
-            <div class="filter-tabs">
-              <div class="ftab active" onclick="filtrarArea('todos',this)">Todos</div>
-              <div class="ftab" onclick="filtrarArea('deposito',this)">Depósito</div>
-              <div class="ftab" onclick="filtrarArea('ventas',this)">Ventas</div>
-              <div class="ftab" onclick="filtrarArea('otro',this)">Otros</div>
+            <div>
+              <h3>Empleados — saldo ${anio}</h3>
+              <div class="sub">${empleados.length} empleados activos</div>
+            </div>
+            <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+              <div class="tabs">
+                <button class="active" onclick="filtrarArea('todos',this)">Todos</button>
+                <button onclick="filtrarArea('deposito',this)">Depósito</button>
+                <button onclick="filtrarArea('ventas',this)">Ventas</button>
+                <button onclick="filtrarArea('otro',this)">Otros</button>
+              </div>
             </div>
           </div>
-          <table><thead><tr><th>Empleado</th><th>F. Ingreso</th><th>Área</th><th>Antigüedad</th><th>Días a gozar</th><th>Días pendientes</th><th>Estado</th><th style="width:40px"></th></tr></thead>
-          <tbody id="tbody-emp">${renderFilas(empleados)}</tbody></table>
+          <table class="table">
+            <thead><tr>
+              <th>Empleado</th><th>F. Ingreso</th><th>Área</th><th>Antigüedad</th>
+              <th>Días a gozar</th><th>Saldo</th><th>Estado</th><th style="width:36px"></th>
+            </tr></thead>
+            <tbody id="tbody-emp">${renderFilas(empleados)}</tbody>
+          </table>
         </div>
-        <div class="side-panel">
-          <div class="panel-card">
-            <div class="panel-title">⏳ Pendientes de aprobación</div>
-            ${pendientes.length===0?`<p style="font-size:12px;color:var(--text3)">Sin solicitudes ✓</p>`:pendientes.map(l=>`
-              <div class="pending-item" id="pend-${l.id}">
-                <div class="pending-name">${l.empleado.nombre} ${l.empleado.apellido}</div>
-                <div class="pending-detail">${tipoLabel(l.tipo)} · ${fmtD(l.fechaInicio)} → ${fmtD(l.fechaFin)} · <strong>${l.diasHabiles}d</strong></div>
-                <div class="pa">
-                  <button class="act-btn a-approve" onclick="aprobar('${l.id}')">✓ Aprobar</button>
-                  <button class="act-btn a-reject" onclick="rechazar('${l.id}')">✗ Rechazar</button>
-                </div>
-              </div>`).join('')}
+
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div class="card">
+            <div class="card-header">
+              <h3>Pendientes de aprobación</h3>
+              <span class="badge badge-warn">${pendientes.length}</span>
+            </div>
+            <div style="padding:0 16px">
+              ${pendientes.length === 0
+                ? `<div style="padding:20px 0;font-size:12px;color:var(--muted);text-align:center">Sin solicitudes pendientes ✓</div>`
+                : pendientes.map(l => `
+                  <div class="employee-row" id="pend-${l.id}">
+                    <div class="avatar avatar-sm">${l.empleado.nombre[0]}${l.empleado.apellido?.[0] || ''}</div>
+                    <div class="info">
+                      <strong>${l.empleado.nombre} ${l.empleado.apellido}</strong>
+                      <small>${tipoLabel(l.tipo)} · ${fmtD(l.fechaInicio)} → ${fmtD(l.fechaFin)} · ${l.diasHabiles}d</small>
+                    </div>
+                    <div style="display:flex;gap:4px;flex-shrink:0">
+                      <button class="btn btn-sm btn-ok" onclick="aprobar('${l.id}')">✓</button>
+                      <button class="btn btn-sm btn-danger" onclick="rechazar('${l.id}')">✗</button>
+                    </div>
+                  </div>`).join('')}
+            </div>
           </div>
-          <div class="panel-card">
-            <div class="panel-title">✍️ Para firmar</div>
-            ${paraFirmar.length===0?`<p style="font-size:12px;color:var(--text3)">Todo firmado ✓</p>`:paraFirmar.map(l=>`
-              <div class="pending-item">
-                <div class="pending-name">${l.empleado.nombre} ${l.empleado.apellido}</div>
-                <div class="pending-detail">${tipoLabel(l.tipo)} · ${fmtD(l.fechaInicio)} → ${fmtD(l.fechaFin)}</div>
-                <div class="pa"><button class="act-btn a-sign" onclick="abrirFirmaAdmin('${l.id}','${l.empleado.nombre} ${l.empleado.apellido}')">✍️ Firmar</button></div>
-              </div>`).join('')}
+
+          <div class="card">
+            <div class="card-header">
+              <h3>Para firmar</h3>
+              <span class="badge ${paraFirmar.length > 0 ? 'badge-info' : 'badge-neutral'}">${paraFirmar.length}</span>
+            </div>
+            <div style="padding:0 16px">
+              ${paraFirmar.length === 0
+                ? `<div style="padding:20px 0;font-size:12px;color:var(--muted);text-align:center">Todo firmado ✓</div>`
+                : paraFirmar.map(l => `
+                  <div class="employee-row">
+                    <div class="avatar avatar-sm">${l.empleado.nombre[0]}${l.empleado.apellido?.[0] || ''}</div>
+                    <div class="info">
+                      <strong>${l.empleado.nombre} ${l.empleado.apellido}</strong>
+                      <small>${tipoLabel(l.tipo)} · ${fmtD(l.fechaInicio)} → ${fmtD(l.fechaFin)}</small>
+                    </div>
+                    <button class="btn btn-sm" onclick="abrirFirmaAdmin('${l.id}','${l.empleado.nombre} ${l.empleado.apellido}')">Firmar</button>
+                  </div>`).join('')}
+            </div>
           </div>
         </div>
       </div>
     </div>`;
 }
 
-function renderFilas(lista){
-  if(!lista.length)return`<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--text3)">Sin datos</td></tr>`;
-  const cols=['linear-gradient(135deg,#7c3aad,#b344e0)','linear-gradient(135deg,#1d4ed8,#3b82f6)','linear-gradient(135deg,#065f46,#10b981)','linear-gradient(135deg,#92400e,#f59e0b)','linear-gradient(135deg,#9d174d,#ec4899)','linear-gradient(135deg,#164e63,#0891b2)'];
-  const hoy=new Date().toISOString().split('T')[0];
-  return lista.map(e=>{
-    const pct=e.diasAsignados>0?Math.max(0,(e.saldoTotal/e.diasAsignados)*100):0;
-    const pendPct=e.diasAsignados>0?Math.min(100,(e.saldoTotal/e.diasAsignados)*100):0;
-    const bC=pendPct>60?'linear-gradient(90deg,#10b981,#34d399)':pendPct>25?'linear-gradient(90deg,#f59e0b,#fbbf24)':'linear-gradient(90deg,#ef4444,#f87171)';
-    const[eL,eC]=e.saldoTotal<=0?['Sin saldo','b-red']:pct<30?['Casi agotado','b-yellow']:e.diasTomados>0?['En curso','b-blue']:['Disponible','b-green'];
-    const col=cols[e.nombre.charCodeAt(0)%cols.length];
-    const fIng=new Date(e.fechaIngreso).toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'});
-    const ausente=window.ausentesIds&&window.ausentesIds.has(e.id);
-    return`<tr data-area="${e.area.toLowerCase()}" data-nombre="${(e.nombre+' '+e.apellido).toLowerCase()}">
-      <td><div class="emp-cell"><div class="emp-av-sm" style="background:${col}">${e.nombre[0]}${e.apellido[0]}</div><div><div class="emp-name">${e.nombre} ${e.apellido}</div></div></div></td>
-      <td style="font-size:12px;color:var(--text3)">${fIng}</td>
-      <td><span style="font-size:11px;padding:2px 8px;border-radius:20px;background:rgba(124,58,173,0.15);color:var(--pale)">${e.area}</span></td>
-      <td style="font-size:12px;color:var(--text2)">⏱ ${antig(e.fechaIngreso)}</td>
-      <td style="color:var(--pale);font-weight:600;font-size:14px">${e.diasAsignados}<span style="color:var(--text3);font-size:11px;font-weight:400"> d</span></td>
-      <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:${pendPct}%;background:${bC}"></div></div><span style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:${e.saldoTotal>0?'var(--green)':'var(--red)'}">${e.saldoTotal}</span></div></td>
-      <td><span class="badge ${eC}"><span class="b-dot"></span>${eL}</span></td>
-      <td style="text-align:center">${ausente?'<span title="Ausente hoy" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 6px var(--red)"></span>':''}</td>
+const avatarPalette = [
+  '#1a1a1a','#2d5016','#4a1942','#1a3a5c','#5c2d00','#1a4a3a',
+];
+function avatarColor(nombre) {
+  return avatarPalette[nombre.charCodeAt(0) % avatarPalette.length];
+}
+
+function renderFilas(lista) {
+  if (!lista.length) return `<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted)">Sin datos</td></tr>`;
+  return lista.map(e => {
+    const pendPct = e.diasAsignados > 0 ? Math.min(100, (e.saldoTotal / e.diasAsignados) * 100) : 0;
+    const progCls = pendPct < 30 ? 'bad' : pendPct < 60 ? 'warn' : '';
+    const [eLabel, eCls] = e.saldoTotal <= 0
+      ? ['Sin saldo', 'badge-bad']
+      : pendPct < 30 ? ['Casi agotado', 'badge-warn']
+      : e.diasTomados > 0 ? ['En curso', 'badge-info']
+      : ['Disponible', 'badge-ok'];
+    const fIng = new Date(e.fechaIngreso).toLocaleDateString('es-AR', { day: '2-digit', month: 'short', year: 'numeric' });
+    const ausente = window.ausentesIds && window.ausentesIds.has(e.id);
+    return `<tr data-area="${e.area.toLowerCase()}" data-nombre="${(e.nombre + ' ' + e.apellido).toLowerCase()}">
+      <td>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="avatar avatar-sm" style="background:${avatarColor(e.nombre)}">${e.nombre[0]}${e.apellido?.[0] || ''}</div>
+          <div style="font-weight:500;font-size:13px">${e.nombre} ${e.apellido}</div>
+        </div>
+      </td>
+      <td class="mono" style="font-size:12px;color:var(--muted)">${fIng}</td>
+      <td><span class="badge badge-neutral">${e.area}</span></td>
+      <td class="mono" style="font-size:12px;color:var(--ink-2)">${antig(e.fechaIngreso)}</td>
+      <td class="mono" style="font-weight:600">${e.diasAsignados}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px;min-width:120px">
+          <div style="width:70px"><div class="progress"><div class="progress-fill ${progCls}" style="width:${pendPct}%"></div></div></div>
+          <span class="mono" style="font-size:13px;font-weight:600;color:${e.saldoTotal > 0 ? 'var(--ok)' : 'var(--bad)'}">${e.saldoTotal}</span>
+        </div>
+      </td>
+      <td><span class="badge ${eCls}"><span class="dot"></span>${eLabel}</span></td>
+      <td style="text-align:center">${ausente ? '<span class="badge badge-bad" style="font-size:10px;padding:2px 6px">Hoy</span>' : ''}</td>
     </tr>`;
   }).join('');
 }
 
-let _ferData=[], _ferAnio=new Date().getFullYear(), _ferCal=false;
+// ─── FERIADOS ────────────────────────────────────────────────────────────────
+let _ferData = [], _ferAnio = new Date().getFullYear(), _ferCal = false;
 
-async function cargarFeriados(){
-  _ferAnio=new Date().getFullYear(); _ferCal=false;
-  const main=document.getElementById('main-content');
-  main.innerHTML=`<div class="loading-wrap"><div class="spinner"></div></div>`;
-  const r=await fetch(`${API}/feriados?anio=${_ferAnio}`,{headers:H()});
-  _ferData=await r.json();
+async function cargarFeriados() {
+  _ferAnio = new Date().getFullYear(); _ferCal = false;
+  document.getElementById('main-content').innerHTML = `<div class="loading-wrap"><div class="spinner"></div></div>`;
+  const r = await fetch(`${API}/feriados?anio=${_ferAnio}`, { headers: H() });
+  _ferData = await r.json();
   _pintarFeriados();
 }
 
-function _pintarFeriados(){
-  const main=document.getElementById('main-content');
-  const anio=_ferAnio;
-  const toggleLista=`padding:5px 12px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;transition:all 0.15s;background:${!_ferCal?'rgba(124,58,173,0.3)':'transparent'};color:${!_ferCal?'var(--pale)':'var(--text3)'}`;
-  const toggleCal=`padding:5px 12px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;transition:all 0.15s;background:${_ferCal?'rgba(124,58,173,0.3)':'transparent'};color:${_ferCal?'var(--pale)':'var(--text3)'}`;
-  main.innerHTML=`
+function _pintarFeriados() {
+  const main = document.getElementById('main-content');
+  const anio = _ferAnio;
+  main.innerHTML = `
     <div class="topbar">
-      <div><div class="topbar-title">Feriados</div><div class="topbar-sub">Días no hábiles excluidos del cálculo de licencias</div></div>
-      <div class="topbar-right">
-        <select class="form-select" id="sel-anio" style="width:auto;padding:7px 12px;font-size:13px" onchange="_cambiarAnioFer(parseInt(this.value))">
-          ${[anio-1,anio,anio+1].map(a=>`<option value="${a}" ${a===anio?'selected':''}>${a}</option>`).join('')}
+      <div>
+        <div class="breadcrumb">Configuración</div>
+        <h1>Feriados</h1>
+      </div>
+      <div class="topbar-actions">
+        <select class="form-select" id="sel-anio" style="width:auto;height:34px;padding:0 10px" onchange="_cambiarAnioFer(parseInt(this.value))">
+          ${[anio-1, anio, anio+1].map(a => `<option value="${a}" ${a === anio ? 'selected' : ''}>${a}</option>`).join('')}
         </select>
-        <div style="display:flex;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:3px;gap:2px">
-          <button style="${toggleLista}" onclick="_setVistaFer(false)">☰ Lista</button>
-          <button style="${toggleCal}"   onclick="_setVistaFer(true)">📅 Calendario</button>
+        <div class="tabs">
+          <button class="${!_ferCal ? 'active' : ''}" onclick="_setVistaFer(false)">Lista</button>
+          <button class="${_ferCal ? 'active' : ''}" onclick="_setVistaFer(true)">Calendario</button>
         </div>
-        <button class="btn btn-primary" id="btn-sync" onclick="sincronizarFeriados()">🔄 Sincronizar oficial</button>
+        <button class="btn btn-primary" id="btn-sync" onclick="sincronizarFeriados()">${ic.sync} Sincronizar oficial</button>
       </div>
     </div>
     <div class="content">
       <div class="sync-banner">
-        <div class="sync-info">Conectado a la API oficial de feriados argentina<span>Fuente: nager.date · datos del Ministerio del Interior</span></div>
-        <span style="font-size:12px;color:var(--green)">● Disponible</span>
+        <div>API oficial de feriados argentina<small>Fuente: nager.date · Ministerio del Interior</small></div>
+        <span class="badge badge-ok"><span class="dot"></span>Disponible</span>
       </div>
-      <div id="fer-content">${_ferCal ? _renderCal(_ferData,anio) : renderFeriados(_ferData,anio)}</div>
+      <div id="fer-content">${_ferCal ? _renderCal(_ferData, anio) : _renderFerLista(_ferData, anio)}</div>
     </div>`;
 }
 
-function _setVistaFer(cal){ _ferCal=cal; _pintarFeriados(); }
+function _setVistaFer(cal) { _ferCal = cal; _pintarFeriados(); }
 
-async function _cambiarAnioFer(anio){
-  _ferAnio=anio;
-  const r=await fetch(`${API}/feriados?anio=${anio}`,{headers:H()});
-  _ferData=await r.json();
+async function _cambiarAnioFer(anio) {
+  _ferAnio = anio;
+  const r = await fetch(`${API}/feriados?anio=${anio}`, { headers: H() });
+  _ferData = await r.json();
   _pintarFeriados();
 }
 
-function _renderCal(data,anio){
-  const ferMap={};
-  data.forEach(f=>{ const k=new Date(f.fecha).toISOString().split('T')[0]; ferMap[k]=f.nombre; });
-  const meses=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-  const dias=['D','L','M','X','J','V','S'];
-  let html=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">`;
-  for(let m=0;m<12;m++){
-    const firstDay=new Date(anio,m,1).getDay();
-    const total=new Date(anio,m+1,0).getDate();
-    let cells=Array(firstDay).fill('<div></div>').join('');
-    for(let d=1;d<=total;d++){
-      const key=`${anio}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-      const nombre=ferMap[key];
-      const dow=new Date(anio,m,d).getDay();
-      const finde=dow===0||dow===6;
-      const bg=nombre?'rgba(124,58,173,0.45)':'transparent';
-      const color=nombre?'var(--pale)':finde?'rgba(255,255,255,0.2)':'var(--text2)';
-      const border=nombre?'1px solid rgba(179,68,224,0.5)':'none';
-      const safe=nombre?nombre.replace(/'/g,'').replace(/"/g,''):'';
-      cells+=`<div title="${safe}" style="text-align:center;padding:3px 1px;border-radius:4px;font-size:11px;font-weight:${nombre?'700':'400'};background:${bg};color:${color};border:${border};cursor:${nombre?'pointer':'default'}" ${nombre?`onclick="showToast('${safe}','info')"`:''} >${d}</div>`;
+function _renderFerLista(data, anio) {
+  if (!data.length) return `<div style="text-align:center;padding:48px;color:var(--muted);font-size:13px">No hay feriados para ${anio}. Hacé clic en "Sincronizar oficial"</div>`;
+  return `<div class="card" style="overflow:hidden"><table class="table">
+    <thead><tr><th>#</th><th>Fecha</th><th>Día</th><th>Nombre</th><th>Tipo</th><th></th></tr></thead>
+    <tbody>
+      ${data.map((f, i) => {
+        const d   = new Date(f.fecha + 'T12:00:00');
+        const dow = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'][d.getDay()];
+        return `<tr>
+          <td class="mono" style="color:var(--muted)">${String(i+1).padStart(2,'0')}</td>
+          <td class="mono" style="font-weight:500">${d.toLocaleDateString('es-AR', {day:'2-digit',month:'short',year:'numeric'})}</td>
+          <td style="color:var(--ink-2)">${dow}</td>
+          <td style="font-weight:500">${f.nombre}</td>
+          <td><span class="badge badge-neutral">${f.tipo}</span></td>
+          <td style="text-align:right">
+            <button onclick="eliminarFeriado('${f.id}',this)" style="font-size:12px;color:var(--muted);padding:4px 8px;border-radius:var(--radius);background:none;border:1px solid var(--line);cursor:pointer;font-family:var(--sans)">Eliminar</button>
+          </td>
+        </tr>`;
+      }).join('')}
+    </tbody>
+  </table></div>`;
+}
+
+function _renderCal(data, anio) {
+  const ferMap = {};
+  data.forEach(f => { ferMap[new Date(f.fecha).toISOString().split('T')[0]] = f.nombre; });
+  const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const dias  = ['D','L','M','X','J','V','S'];
+  let html = `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">`;
+  for (let m = 0; m < 12; m++) {
+    const firstDay = new Date(anio, m, 1).getDay();
+    const total    = new Date(anio, m + 1, 0).getDate();
+    let cells = Array(firstDay).fill(`<div></div>`).join('');
+    for (let d = 1; d <= total; d++) {
+      const key    = `${anio}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const nombre = ferMap[key];
+      const dow    = new Date(anio, m, d).getDay();
+      const finde  = dow === 0 || dow === 6;
+      const bg     = nombre ? 'var(--warn-bg)' : 'transparent';
+      const color  = nombre ? 'var(--warn)' : finde ? 'var(--muted-2)' : 'var(--ink-2)';
+      const fw     = nombre ? '600' : '400';
+      const safe   = nombre ? nombre.replace(/'/g, '').replace(/"/g, '') : '';
+      cells += `<div title="${safe}" style="text-align:center;padding:3px 1px;border-radius:4px;font-size:11px;font-weight:${fw};background:${bg};color:${color};cursor:${nombre ? 'pointer' : 'default'}" ${nombre ? `onclick="showToast('${safe}','info')"` : ''}>${d}</div>`;
     }
-    html+=`<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden">
-      <div style="padding:9px 14px;border-bottom:1px solid var(--border);font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:var(--pale)">${meses[m]}</div>
+    html += `<div class="card" style="overflow:hidden">
+      <div style="padding:9px 14px;border-bottom:1px solid var(--line-2);font-size:13px;font-weight:600">${meses[m]}</div>
       <div style="padding:8px 10px">
-        <div style="display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:3px">${dias.map(d=>`<div style="text-align:center;font-size:9px;color:var(--text3);font-weight:600;padding:2px">${d}</div>`).join('')}</div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:3px">
+          ${dias.map(d => `<div style="text-align:center;font-size:9px;color:var(--muted);font-weight:500;padding:2px">${d}</div>`).join('')}
+        </div>
         <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px">${cells}</div>
       </div>
     </div>`;
   }
-  html+=`</div><div style="margin-top:14px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text3)"><div style="width:12px;height:12px;border-radius:3px;background:rgba(124,58,173,0.45);border:1px solid rgba(179,68,224,0.5)"></div>Feriado — clic para ver el nombre</div>`;
+  html += `</div><div style="margin-top:12px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)"><div style="width:12px;height:12px;border-radius:3px;background:var(--warn-bg);border:1px solid var(--warn)"></div>Feriado — clic para ver el nombre</div>`;
   return html;
 }
 
-function renderFeriados(data,anio){
-  if(!data.length)return`<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text3)">No hay feriados para ${anio}. Hacé clic en "Sincronizar oficial"</div>`;
-  return`<div class="feriados-grid">`+data.map((f,i)=>{
-    const d=new Date(f.fecha);
-    return`<div class="feriado-card" style="animation-delay:${i*0.025}s">
-      <div>
-        <div class="feriado-fecha">${d.toLocaleDateString('es-AR',{day:'2-digit',month:'short'})} <span style="font-size:11px;font-weight:400;color:var(--text3)">${d.toLocaleDateString('es-AR',{weekday:'short'})}</span></div>
-        <div class="feriado-nombre">${f.nombre}</div>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
-        <span class="feriado-tipo">${f.tipo}</span>
-        <span class="feriado-del" onclick="eliminarFeriado('${f.id}',this)">✕</span>
-      </div>
-    </div>`;
-  }).join('')+`</div>`;
-}
-
-async function sincronizarFeriados(){
-  const anio=document.getElementById('sel-anio')?.value||new Date().getFullYear();
-  const btn=document.getElementById('btn-sync');
-  btn.disabled=true;btn.textContent='⏳ Sincronizando...';
-  try{
-    const r=await fetch(`${API}/feriados/sincronizar?anio=${anio}`,{method:'POST',headers:H()});
-    const data=await r.json();
-    if(!r.ok)throw new Error(data.error);
-    showToast(`✅ ${data.importados} feriados importados para ${anio}`,'success');
-    _ferData=await (await fetch(`${API}/feriados?anio=${anio}`,{headers:H()})).json(); _pintarFeriados();
-    const fr=await fetch(`${API}/feriados?anio=${new Date().getFullYear()}`,{headers:H()});
-    feriados=(await fr.json()).map(f=>f.fecha.split('T')[0]);
-  }catch(e){showToast('Error: '+e.message,'error');}
-  finally{btn.disabled=false;btn.textContent='🔄 Sincronizar oficial';}
-}
-
-async function eliminarFeriado(id,el){
-  el.closest('.feriado-card').style.opacity='0.3';
-  await fetch(`${API}/feriados/${id}`,{method:'DELETE',headers:H()});
-  el.closest('.feriado-card').remove();
-  _ferData=_ferData.filter(f=>f.id!==id);
-  showToast('Feriado eliminado','info');
-}
-
-async function cargarTodasLicencias(){
-  const anio=new Date().getFullYear();
-  const main=document.getElementById('main-content');
-  main.innerHTML=`<div class="loading-wrap"><div class="spinner"></div></div>`;
-  const r=await fetch(`${API}/licencias?anio=${anio}`,{headers:H()});
-  const todas=await r.json();
-  main.innerHTML=`
-    <div class="topbar">
-      <div><div class="topbar-title">Todas las licencias ${anio}</div></div>
-      <div class="topbar-right"><button class="btn btn-primary" onclick="openModal('modal-licencia')">+ Nueva</button></div>
-    </div>
-    <div class="content">
-      <div class="table-card">
-        <table><thead><tr><th>Empleado</th><th>Tipo</th><th>Desde</th><th>Hasta</th><th>Días</th><th>Observaciones</th><th>Estado</th><th>Firma resp.</th><th></th></tr></thead>
-        <tbody>${todas.map(l=>`<tr>
-          <td><strong style="font-size:13px">${l.empleado.nombre} ${l.empleado.apellido}</strong><br><span style="font-size:11px;color:var(--text3)">${l.empleado.area}</span></td>
-          <td><span class="badge b-purple"><span class="b-dot"></span>${tipoLabel(l.tipo)}</span></td>
-          <td style="font-size:12px;color:var(--text2)">${fmtD(l.fechaInicio)}</td>
-          <td style="font-size:12px;color:var(--text2)">${fmtD(l.fechaFin)}</td>
-          <td style="font-weight:600">${l.diasHabiles}</td>
-          <td style="font-size:12px;color:var(--text3)">${l.observaciones||'—'}</td>
-          <td>${estadoBadge(l.estado)}</td>
-          <td style="font-size:12px">${l.firma?`<span style="color:var(--green)">✓ Firmada</span>`:`<span style="color:var(--text3)">Pendiente</span>`}</td>
-          <td><button onclick="eliminarLicencia('${l.id}',this)" style="padding:4px 10px;border-radius:6px;background:rgba(248,113,113,0.1);color:var(--red);border:none;cursor:pointer;font-size:11px;font-family:DM Sans,sans-serif">🗑 Eliminar</button></td>
-        </tr>`).join('')}</tbody></table>
-      </div>
-    </div>`;
-}
-
-async function cargarEmpleado(){
-  const main=document.getElementById('main-content');
-  main.innerHTML=`<div class="loading-wrap"><div class="spinner"></div></div>`;
-  const empId=usuario.empleado?.id;
-  if(!empId){main.innerHTML='<div style="padding:40px;color:var(--text3)">Sin empleado vinculado.</div>';return;}
-  const[empRes,licRes]=await Promise.all([
-    fetch(`${API}/empleados/${empId}`,{headers:H()}),
-    fetch(`${API}/licencias`,{headers:H()})
-  ]);
-  const emp=await empRes.json();
-  const lics=await licRes.json();
-  const sel=document.getElementById('lic-emp');
-  sel.innerHTML=`<option value="${emp.id}">${emp.nombre} ${emp.apellido}</option>`;
-  sel.disabled=true;
-  main.innerHTML=`
-    <div class="topbar">
-      <div><div class="topbar-title">Mi panel</div><div class="topbar-sub">${emp.nombre} ${emp.apellido} · ${emp.area}${emp.documento?' · DNI '+emp.documento:''}</div></div>
-      <div class="topbar-right"><button class="btn btn-ghost" onclick="openModal('modal-pass')">🔑 Contraseña</button><button class="btn btn-primary" onclick="openModal('modal-licencia')">+ Solicitar licencia</button></div>
-    </div>
-    <div class="emp-view-wrap">
-      <div class="saldo-cards">
-        <div class="saldo-card"><div class="saldo-num" style="color:var(--pale)">${emp.saldo.diasAsignados}</div><div class="saldo-lbl">Días asignados ${new Date().getFullYear()}</div></div>
-        <div class="saldo-card"><div class="saldo-num" style="color:var(--yellow)">${emp.saldo.diasTomados}</div><div class="saldo-lbl">Días tomados</div></div>
-        <div class="saldo-card"><div class="saldo-num" style="color:${emp.saldo.saldoTotal>0?'var(--green)':'var(--red)'}">${emp.saldo.saldoTotal}</div><div class="saldo-lbl">Saldo disponible</div></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
-        <div class="info-banner">⏱ Antigüedad: <strong>${antig(emp.fechaIngreso)}</strong></div>
-        ${emp.saldo.saldoAnterior>0?`<div class="info-banner">↗ Arrastrado año anterior: <strong>${emp.saldo.saldoAnterior} días</strong></div>`:'<div></div>'}
-      </div>
-      <div class="table-card">
-        <div class="card-header"><div class="card-title"><div class="card-dot"></div> Mis licencias</div></div>
-        <table><thead><tr><th>Tipo</th><th>Desde</th><th>Hasta</th><th>Días</th><th>Observaciones</th><th>Estado</th><th>Firma conformidad</th></tr></thead>
-        <tbody>${lics.length===0
-          ?`<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text3)">Sin licencias registradas</td></tr>`
-          :lics.map(l=>`<tr>
-            <td><span class="badge b-purple"><span class="b-dot"></span>${tipoLabel(l.tipo)}</span></td>
-            <td style="font-size:12px;color:var(--text2)">${fmtD(l.fechaInicio)}</td>
-            <td style="font-size:12px;color:var(--text2)">${fmtD(l.fechaFin)}</td>
-            <td style="font-weight:600">${l.diasHabiles}</td>
-            <td style="font-size:12px;color:var(--text3)">${l.observaciones||'—'}</td>
-            <td>${estadoBadge(l.estado)}</td>
-            <td>${l.firma?`<span style="color:var(--green);font-size:12px">✓ Firmada</span>`:l.estado==='CUMPLIDA'?`<button class="act-btn a-sign" onclick="abrirFirmaEmp('${l.id}')">✍️ Firmar</button>`:`<span style="font-size:12px;color:var(--text3)">—</span>`}</td>
-          </tr>`).join('')}
-        </tbody></table>
-      </div>
-    </div>`;
-}
-
-async function aprobar(id){
-  try{
-    const r=await fetch(`${API}/licencias/${id}/aprobar`,{method:'POST',headers:H(),body:JSON.stringify({motivo:'Aprobado'})});
-    if(!r.ok)throw new Error();
-    document.getElementById(`pend-${id}`)?.remove();
-    showToast('✅ Licencia aprobada','success');
-    setTimeout(cargarAdmin,1200);
-  }catch{showToast('Error al aprobar','error');}
-}
-async function rechazar(id){
-  try{
-    await fetch(`${API}/licencias/${id}/rechazar`,{method:'POST',headers:H(),body:JSON.stringify({motivo:'Rechazado'})});
-    document.getElementById(`pend-${id}`)?.remove();
-    showToast('Licencia rechazada','info');
-    setTimeout(cargarAdmin,1200);
-  }catch{showToast('Error','error');}
-}
-function abrirFirmaAdmin(licId,nombre){
-  licFirmandoId=licId;
-  document.getElementById('firma-sub-admin').textContent=`Licencia de ${nombre}`;
-  openModal('modal-firma');
-  setTimeout(()=>{sigAdmin=new SignaturePad(document.getElementById('firma-canvas-admin'),{backgroundColor:'#ffffff',penColor:'#2d1b4e'});},100);
-}
-async function confirmarFirmaAdmin(){
-  if(!sigAdmin||sigAdmin.isEmpty()){showToast('Dibujá tu firma primero','error');return;}
-  try{
-    const r=await fetch(`${API}/licencias/${licFirmandoId}/firmar`,{method:'POST',headers:H(),body:JSON.stringify({imagenBase64:sigAdmin.toDataURL('image/png')})});
-    if(!r.ok)throw new Error((await r.json()).error);
-    closeModal('modal-firma');showToast('✍️ Firmada correctamente','success');
-    setTimeout(cargarAdmin,1000);
-  }catch(e){showToast(e.message||'Error al firmar','error');}
-}
-function abrirFirmaEmp(licId){
-  licFirmandoId=licId;openModal('modal-firma-emp');
-  setTimeout(()=>{sigEmp=new SignaturePad(document.getElementById('firma-canvas-emp'),{backgroundColor:'#ffffff',penColor:'#2d1b4e'});},100);
-}
-async function confirmarFirmaEmp(){
-  if(!sigEmp||sigEmp.isEmpty()){showToast('Dibujá tu firma primero','error');return;}
-  try{
-    const r=await fetch(`${API}/licencias/${licFirmandoId}/firmar`,{method:'POST',headers:H(),body:JSON.stringify({imagenBase64:sigEmp.toDataURL('image/png')})});
-    if(!r.ok)throw new Error();
-    closeModal('modal-firma-emp');showToast('✍️ Conformidad firmada','success');
-    setTimeout(cargarEmpleado,1000);
-  }catch{showToast('Error','error');}
-}
-async function guardarLicencia(){
-  const empleadoId=document.getElementById('lic-emp').value;
-  const tipo=document.getElementById('lic-tipo').value;
-  const fechaInicio=document.getElementById('lic-ini').value;
-  const fechaFin=document.getElementById('lic-fin').value;
-  const observaciones=document.getElementById('lic-obs').value;
-  if(!empleadoId||!fechaInicio||!fechaFin){showToast('Completá los campos obligatorios','error');return;}
-  const btn=document.getElementById('btn-guardar-lic');
-  btn.disabled=true;btn.textContent='Guardando...';
-  try{
-    const r=await fetch(`${API}/licencias`,{method:'POST',headers:H(),body:JSON.stringify({empleadoId,tipo,fechaInicio,fechaFin,observaciones})});
-    const data=await r.json();
-    if(!r.ok){showToast(data.error||'Error','error');return;}
-    closeModal('modal-licencia');
-    document.getElementById('lic-obs').value='';
-    showToast('✅ Licencia registrada','success');
-    setTimeout(()=>usuario.rol==='ADMIN'?cargarAdmin():cargarEmpleado(),800);
-  }catch{showToast('Error de conexión','error');}
-  finally{btn.disabled=false;btn.textContent='Guardar';}
-}
-function filtrarTabla(q){document.querySelectorAll('#tbody-emp tr').forEach(r=>{r.style.display=(r.getAttribute('data-nombre')||'').includes(q.toLowerCase())?'':'none';});}
-function filtrarArea(area,el){
-  document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));el.classList.add('active');
-  document.querySelectorAll('#tbody-emp tr').forEach(r=>{
-    const a=r.getAttribute('data-area')||'';
-    if(area==='todos')r.style.display='';
-    else if(area==='deposito')r.style.display=a.includes('deposito')?'':'none';
-    else if(area==='ventas')r.style.display=a.includes('ventas')?'':'none';
-    else r.style.display=(!a.includes('deposito')&&!a.includes('ventas'))?'':'none';
-  });
-}
-function calcPrev(){
-  const ini=document.getElementById('lic-ini').value,fin=document.getElementById('lic-fin').value,el=document.getElementById('prev-val');
-  if(!ini||!fin||fin<ini){el.textContent='—';return;}
-  let dias=0;const cur=new Date(ini+'T12:00:00'),finD=new Date(fin+'T12:00:00');
-  while(cur<=finD){if(cur.getDay()!==0&&!feriados.includes(cur.toISOString().split('T')[0]))dias++;cur.setDate(cur.getDate()+1);}
-  el.textContent=dias;
-}
-function exportarCSV(){
-  if(!empleados.length)return;
-  const rows=empleados.map(e=>`${e.nombre},${e.apellido},${e.area},${e.documento||''},${e.fechaIngreso.split('T')[0]},${e.diasAsignados},${e.diasTomados},${e.saldoTotal}`);
-  const csv=['Nombre,Apellido,Area,Documento,Ingreso,Asignados,Tomados,Saldo',...rows].join('\n');
-  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download=`licencias_${new Date().getFullYear()}.csv`;a.click();
-}
-function antig(f){const a=(new Date()-new Date(f))/(365.25*24*3600*1000);return a<1?Math.round(a*12)+' meses':a.toFixed(1).replace('.0','')+' años';}
-function fmtD(d){return new Date(d).toLocaleDateString('es-AR',{day:'2-digit',month:'short'});}
-function tipoLabel(t){return{VACACIONES:'Vacaciones',PERMISO:'Permiso',LICENCIA_MEDICA:'Lic. médica',AUSENCIA:'Ausencia'}[t]||t;}
-function estadoBadge(e){const m={PENDIENTE:['b-yellow','⏳ Pendiente'],APROBADA:['b-green','✅ Aprobada'],RECHAZADA:['b-red','✗ Rechazada'],CUMPLIDA:['b-blue','✓ Cumplida']};const[c,l]=m[e]||['b-purple',e];return`<span class="badge ${c}"><span class="b-dot"></span>${l}</span>`;}
-function openModal(id){document.getElementById(id).classList.add('open');}
-function closeModal(id){document.getElementById(id).classList.remove('open');}
-function closeOut(e,id){if(e.target===document.getElementById(id))closeModal(id);}
-
-async function eliminarLicencia(id, btn) {
-  if (!confirm('Seguro que queres eliminar esta licencia? Esta accion no se puede deshacer.')) return;
-  btn.disabled = true; btn.textContent = '...';
+async function sincronizarFeriados() {
+  const anio = document.getElementById('sel-anio')?.value || new Date().getFullYear();
+  const btn  = document.getElementById('btn-sync');
+  btn.disabled = true; btn.textContent = 'Sincronizando...';
   try {
-    const r = await fetch(API + '/licencias/' + id, { method: 'DELETE', headers: H() });
-    if (!r.ok) throw new Error((await r.json()).error);
-    btn.closest('tr').style.opacity = '0';
-    btn.closest('tr').style.transition = 'opacity 0.3s';
-    setTimeout(() => btn.closest('tr').remove(), 300);
-    showToast('Licencia eliminada', 'info');
-  } catch(e) {
-    showToast(e.message || 'Error al eliminar', 'error');
-    btn.disabled = false; btn.textContent = '🗑 Eliminar';
+    const r    = await fetch(`${API}/feriados/sincronizar?anio=${anio}`, { method: 'POST', headers: H() });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error);
+    showToast(`${data.importados} feriados importados para ${anio}`, 'success');
+    _ferData = await (await fetch(`${API}/feriados?anio=${anio}`, { headers: H() })).json();
+    _pintarFeriados();
+    const fr = await fetch(`${API}/feriados?anio=${new Date().getFullYear()}`, { headers: H() });
+    feriados = (await fr.json()).map(f => f.fecha.split('T')[0]);
+  } catch (e) {
+    showToast('Error: ' + e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `${ic.sync} Sincronizar oficial`;
   }
 }
 
-async function cambiarPassword(){
-  const actual  = document.getElementById('pass-actual').value;
-  const nueva   = document.getElementById('pass-nueva').value;
-  const confirm = document.getElementById('pass-confirm').value;
-  if(!actual||!nueva||!confirm){showToast('Completá todos los campos','error');return;}
-  if(nueva.length<6){showToast('Mínimo 6 caracteres','error');return;}
-  if(nueva!==confirm){showToast('Las contraseñas no coinciden','error');return;}
-  try{
-    const loginR=await fetch(`${API}/auth/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:usuario.email,password:actual})});
-    if(!loginR.ok){showToast('La contraseña actual es incorrecta','error');return;}
-    const r=await fetch(`${API}/auth/cambiar-password`,{method:'POST',headers:H(),body:JSON.stringify({passwordActual:actual,passwordNueva:nueva})});
-    if(!r.ok)throw new Error((await r.json()).error);
-    closeModal('modal-pass');
-    ['pass-actual','pass-nueva','pass-confirm'].forEach(id=>document.getElementById(id).value='');
-    showToast('✅ Contraseña actualizada','success');
-  }catch(e){showToast(e.message||'Error','error');}
+async function eliminarFeriado(id, el) {
+  el.closest('tr').style.opacity = '0.3';
+  await fetch(`${API}/feriados/${id}`, { method: 'DELETE', headers: H() });
+  el.closest('tr').remove();
+  _ferData = _ferData.filter(f => f.id !== id);
+  showToast('Feriado eliminado', 'info');
 }
 
-async function cargarUsuarios(){
-  const main=document.getElementById('main-content');
-  main.innerHTML=`<div class="loading-wrap"><div class="spinner"></div></div>`;
-  const r=await fetch(`${API}/usuarios`,{headers:H()});
-  const usuarios=await r.json();
-
-  main.innerHTML=`
+// ─── TODAS LAS LICENCIAS ─────────────────────────────────────────────────────
+async function cargarTodasLicencias() {
+  const anio = new Date().getFullYear();
+  const main = document.getElementById('main-content');
+  main.innerHTML = `<div class="loading-wrap"><div class="spinner"></div></div>`;
+  const r     = await fetch(`${API}/licencias?anio=${anio}`, { headers: H() });
+  const todas = await r.json();
+  main.innerHTML = `
     <div class="topbar">
-      <div><div class="topbar-title">Usuarios del sistema</div><div class="topbar-sub">Administrá quién tiene acceso y con qué rol</div></div>
-      <div class="topbar-right">
-        <button class="btn btn-primary" onclick="abrirNuevoUsuario()">+ Nuevo usuario</button>
+      <div>
+        <div class="breadcrumb">Panel</div>
+        <h1>Licencias ${anio}</h1>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn btn-primary" onclick="openModal('modal-licencia')">${ic.plus} Nueva</button>
       </div>
     </div>
     <div class="content">
-      <div class="table-card">
-        <div class="card-header">
-          <div class="card-title"><div class="card-dot"></div> Usuarios</div>
-        </div>
-        <table>
-          <thead><tr><th>Email</th><th>Rol</th><th>Empleado vinculado</th><th>Estado</th><th>Creado</th><th></th></tr></thead>
+      <div class="card" style="overflow:hidden">
+        <table class="table">
+          <thead><tr>
+            <th>Empleado</th><th>Tipo</th><th>Desde</th><th>Hasta</th>
+            <th>Días</th><th>Observaciones</th><th>Estado</th><th>Firma</th><th></th>
+          </tr></thead>
           <tbody>
-            ${usuarios.map(u=>`<tr id="urow-${u.id}">
-              <td style="font-weight:500">${u.email}</td>
+            ${todas.map(l => `<tr>
               <td>
-                <select onchange="cambiarRol('${u.id}',this.value)" style="padding:4px 8px;border-radius:6px;font-size:12px;background:var(--bg2);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;cursor:pointer" ${u.id===usuario.id?'disabled':''}>
-                  <option value="ADMIN"    ${u.rol==='ADMIN'   ?'selected':''}>Admin</option>
-                  <option value="EMPLEADO" ${u.rol==='EMPLEADO'?'selected':''}>Empleado</option>
-                </select>
-              </td>
-              <td style="font-size:12px;color:var(--text3)">${u.empleado?u.empleado.nombre+' '+u.empleado.apellido+' · '+u.empleado.area:'— Sin vincular'}</td>
-              <td><span class="badge ${u.activo?'b-green':'b-red'}"><span class="b-dot"></span>${u.activo?'Activo':'Inactivo'}</span></td>
-              <td style="font-size:12px;color:var(--text3)">${new Date(u.createdAt).toLocaleDateString('es-AR')}</td>
-              <td>
-                <div style="display:flex;gap:6px">
-                  ${u.id!==usuario.id?`
-                    <button onclick="toggleUsuario('${u.id}',${u.activo})" style="padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;background:${u.activo?'rgba(248,113,113,0.1)':'rgba(52,211,153,0.1)'};color:${u.activo?'var(--red)':'var(--green)'}">
-                      ${u.activo?'Desactivar':'Activar'}
-                    </button>
-                  `:'<span style="font-size:11px;color:var(--text3)">Tu cuenta</span>'}
+                <div style="display:flex;align-items:center;gap:8px">
+                  <div class="avatar avatar-sm" style="background:${avatarColor(l.empleado.nombre)}">${l.empleado.nombre[0]}${l.empleado.apellido?.[0]||''}</div>
+                  <div>
+                    <div style="font-weight:500;font-size:13px">${l.empleado.nombre} ${l.empleado.apellido}</div>
+                    <div style="font-size:11px;color:var(--muted)">${l.empleado.area}</div>
+                  </div>
                 </div>
+              </td>
+              <td><span class="badge badge-neutral">${tipoLabel(l.tipo)}</span></td>
+              <td class="mono" style="font-size:12px">${fmtD(l.fechaInicio)}</td>
+              <td class="mono" style="font-size:12px">${fmtD(l.fechaFin)}</td>
+              <td class="mono" style="font-weight:600">${l.diasHabiles}</td>
+              <td style="font-size:12px;color:var(--muted);max-width:160px">${l.observaciones || '—'}</td>
+              <td>${estadoBadge(l.estado)}</td>
+              <td style="font-size:12px">${l.firma
+                ? `<span style="color:var(--ok);font-weight:500">✓ Firmada</span>`
+                : `<span style="color:var(--muted)">Pendiente</span>`}</td>
+              <td>
+                <button onclick="eliminarLicencia('${l.id}',this)" class="btn btn-sm btn-danger">Eliminar</button>
               </td>
             </tr>`).join('')}
           </tbody>
         </table>
       </div>
+    </div>`;
+}
 
-      <div style="margin-top:16px;padding:14px 18px;background:var(--card);border:1px solid var(--border);border-radius:12px;font-size:13px;color:var(--text3)">
-        💡 Los empleados creados desde la pantalla de Empleados ya tienen usuario automáticamente con su email y DNI como contraseña.
-        Acá podés crear usuarios <strong style="color:var(--text2)">Admin</strong> para los gerentes que necesiten acceso completo al sistema.
+// ─── VISTA EMPLEADO ──────────────────────────────────────────────────────────
+async function cargarEmpleado() {
+  const main  = document.getElementById('main-content');
+  main.innerHTML = `<div class="loading-wrap"><div class="spinner"></div></div>`;
+  const empId = usuario.empleado?.id;
+  if (!empId) { main.innerHTML = `<div style="padding:40px;color:var(--muted)">Sin empleado vinculado.</div>`; return; }
+
+  const [empRes, licRes] = await Promise.all([
+    fetch(`${API}/empleados/${empId}`, { headers: H() }),
+    fetch(`${API}/licencias`, { headers: H() }),
+  ]);
+  const emp  = await empRes.json();
+  const lics = await licRes.json();
+
+  const sel = document.getElementById('lic-emp');
+  sel.innerHTML = `<option value="${emp.id}">${emp.nombre} ${emp.apellido}</option>`;
+  sel.disabled  = true;
+
+  main.innerHTML = `
+    <div class="topbar">
+      <div>
+        <div class="breadcrumb">Mi cuenta</div>
+        <h1>Mi panel</h1>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn" onclick="openModal('modal-pass')">Cambiar contraseña</button>
+        <button class="btn btn-primary" onclick="openModal('modal-licencia')">${ic.plus} Solicitar licencia</button>
       </div>
     </div>
+    <div class="content">
+      <div class="saldo-cards">
+        <div class="saldo-card">
+          <div class="saldo-num">${emp.saldo.diasAsignados}</div>
+          <div class="saldo-lbl">Días asignados ${new Date().getFullYear()}</div>
+        </div>
+        <div class="saldo-card">
+          <div class="saldo-num" style="color:var(--warn)">${emp.saldo.diasTomados}</div>
+          <div class="saldo-lbl">Días tomados</div>
+        </div>
+        <div class="saldo-card">
+          <div class="saldo-num" style="color:${emp.saldo.saldoTotal > 0 ? 'var(--ok)' : 'var(--bad)'}">${emp.saldo.saldoTotal}</div>
+          <div class="saldo-lbl">Saldo disponible</div>
+        </div>
+      </div>
 
-    <!-- Modal nuevo usuario -->
-    <div id="modal-nuevo-usr" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center">
-      <div style="background:var(--card2);border:1px solid var(--border2);border-radius:18px;padding:28px;width:420px;box-shadow:0 24px 60px rgba(0,0,0,0.5)">
-        <div style="font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:4px">Nuevo usuario admin</div>
-        <div style="font-size:12px;color:var(--text3);margin-bottom:20px">Este usuario tendrá acceso completo al sistema</div>
-        <div style="margin-bottom:13px">
-          <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:5px;font-weight:500">Email</label>
-          <input type="email" id="nu-email" placeholder="gerente@empresa.com" style="width:100%;padding:10px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px">
+        <div class="info-banner">Antigüedad: <strong>${antig(emp.fechaIngreso)}</strong> · ${emp.area}${emp.documento ? ' · DNI ' + emp.documento : ''}</div>
+        ${emp.saldo.saldoAnterior > 0
+          ? `<div class="info-banner">↗ Arrastrado año anterior: <strong>${emp.saldo.saldoAnterior} días</strong></div>`
+          : '<div></div>'}
+      </div>
+
+      <div class="card" style="overflow:hidden">
+        <div class="card-header">
+          <div><h3>Mis licencias</h3><div class="sub">${lics.length} registros</div></div>
         </div>
-        <div style="margin-bottom:13px">
-          <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:5px;font-weight:500">Contraseña inicial</label>
-          <input type="text" id="nu-pass" placeholder="Mínimo 6 caracteres" style="width:100%;padding:10px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none">
-        </div>
-        <div style="margin-bottom:13px">
-          <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:5px;font-weight:500">Rol</label>
-          <select id="nu-rol" style="width:100%;padding:10px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none">
-            <option value="ADMIN">Admin — acceso completo</option>
-            <option value="EMPLEADO">Empleado — solo sus datos</option>
-          </select>
-        </div>
-        <div style="display:flex;gap:10px;margin-top:20px">
-          <button onclick="document.getElementById('modal-nuevo-usr').style.display='none'" style="flex:1;padding:10px;background:var(--card);border:1px solid var(--border);border-radius:9px;color:var(--text2);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer">Cancelar</button>
-          <button onclick="crearUsuario()" style="flex:1;padding:10px;background:linear-gradient(135deg,var(--purple),var(--accent));border:none;border-radius:9px;color:white;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer">Crear usuario</button>
-        </div>
+        <table class="table">
+          <thead><tr>
+            <th>Tipo</th><th>Desde</th><th>Hasta</th><th>Días</th>
+            <th>Observaciones</th><th>Estado</th><th>Firma conformidad</th>
+          </tr></thead>
+          <tbody>
+            ${lics.length === 0
+              ? `<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">Sin licencias registradas</td></tr>`
+              : lics.map(l => `<tr>
+                  <td><span class="badge badge-neutral">${tipoLabel(l.tipo)}</span></td>
+                  <td class="mono" style="font-size:12px">${fmtD(l.fechaInicio)}</td>
+                  <td class="mono" style="font-size:12px">${fmtD(l.fechaFin)}</td>
+                  <td class="mono" style="font-weight:600">${l.diasHabiles}</td>
+                  <td style="font-size:12px;color:var(--muted)">${l.observaciones || '—'}</td>
+                  <td>${estadoBadge(l.estado)}</td>
+                  <td>${l.firma
+                    ? `<span style="color:var(--ok);font-size:12px;font-weight:500">✓ Firmada</span>`
+                    : l.estado === 'CUMPLIDA'
+                      ? `<button class="btn btn-sm" onclick="abrirFirmaEmp('${l.id}')">Firmar conformidad</button>`
+                      : `<span style="font-size:12px;color:var(--muted)">—</span>`}
+                  </td>
+                </tr>`).join('')}
+          </tbody>
+        </table>
       </div>
     </div>`;
 }
 
-function abrirNuevoUsuario(){
-  document.getElementById('nu-email').value='';
-  document.getElementById('nu-pass').value='';
-  document.getElementById('nu-rol').value='ADMIN';
-  const m=document.getElementById('modal-nuevo-usr');
-  m.style.display='flex';
-  m.onclick=e=>{if(e.target===m)m.style.display='none';};
+// ─── ACCIONES ────────────────────────────────────────────────────────────────
+async function aprobar(id) {
+  try {
+    const r = await fetch(`${API}/licencias/${id}/aprobar`, { method: 'POST', headers: H(), body: JSON.stringify({ motivo: 'Aprobado' }) });
+    if (!r.ok) throw new Error();
+    document.getElementById(`pend-${id}`)?.remove();
+    showToast('Licencia aprobada', 'success');
+    setTimeout(cargarAdmin, 1200);
+  } catch { showToast('Error al aprobar', 'error'); }
 }
 
-async function crearUsuario(){
-  const email=document.getElementById('nu-email').value.trim();
-  const password=document.getElementById('nu-pass').value.trim();
-  const rol=document.getElementById('nu-rol').value;
-  if(!email||!password){showToast('Completá email y contraseña','error');return;}
-  if(password.length<6){showToast('Mínimo 6 caracteres','error');return;}
-  try{
-    const r=await fetch(`${API}/usuarios`,{method:'POST',headers:H(),body:JSON.stringify({email,password,rol})});
-    const data=await r.json();
-    if(!r.ok)throw new Error(data.error||data.errors?.[0]?.msg);
-    document.getElementById('modal-nuevo-usr').style.display='none';
-    showToast(`✅ Usuario creado: ${email}`,'success');
-    cargarUsuarios();
-  }catch(e){showToast(e.message||'Error','error');}
+async function rechazar(id) {
+  try {
+    await fetch(`${API}/licencias/${id}/rechazar`, { method: 'POST', headers: H(), body: JSON.stringify({ motivo: 'Rechazado' }) });
+    document.getElementById(`pend-${id}`)?.remove();
+    showToast('Licencia rechazada', 'info');
+    setTimeout(cargarAdmin, 1200);
+  } catch { showToast('Error', 'error'); }
 }
 
-async function cambiarRol(id,rol){
-  try{
-    const r=await fetch(`${API}/usuarios/${id}/rol`,{method:'PUT',headers:H(),body:JSON.stringify({rol})});
-    if(!r.ok)throw new Error();
-    showToast('Rol actualizado','success');
-  }catch{showToast('Error al cambiar rol','error');}
+function abrirFirmaAdmin(licId, nombre) {
+  licFirmandoId = licId;
+  document.getElementById('firma-sub-admin').textContent = `Licencia de ${nombre}`;
+  openModal('modal-firma');
+  setTimeout(() => {
+    sigAdmin = new SignaturePad(document.getElementById('firma-canvas-admin'), { backgroundColor: '#ffffff', penColor: '#1a1a1a' });
+  }, 100);
 }
 
-async function toggleUsuario(id,activo){
-  try{
-    const r=await fetch(`${API}/usuarios/${id}/toggle`,{method:'PUT',headers:H()});
-    const data=await r.json();
-    if(!r.ok)throw new Error(data.error);
-    showToast(activo?'Usuario desactivado':'Usuario activado','info');
-    cargarUsuarios();
-  }catch(e){showToast(e.message||'Error','error');}
+async function confirmarFirmaAdmin() {
+  if (!sigAdmin || sigAdmin.isEmpty()) { showToast('Dibujá tu firma primero', 'error'); return; }
+  try {
+    const r = await fetch(`${API}/licencias/${licFirmandoId}/firmar`, { method: 'POST', headers: H(), body: JSON.stringify({ imagenBase64: sigAdmin.toDataURL('image/png') }) });
+    if (!r.ok) throw new Error((await r.json()).error);
+    closeModal('modal-firma');
+    showToast('Firmada correctamente', 'success');
+    setTimeout(cargarAdmin, 1000);
+  } catch (e) { showToast(e.message || 'Error al firmar', 'error'); }
 }
+
+function abrirFirmaEmp(licId) {
+  licFirmandoId = licId;
+  openModal('modal-firma-emp');
+  setTimeout(() => {
+    sigEmp = new SignaturePad(document.getElementById('firma-canvas-emp'), { backgroundColor: '#ffffff', penColor: '#1a1a1a' });
+  }, 100);
+}
+
+async function confirmarFirmaEmp() {
+  if (!sigEmp || sigEmp.isEmpty()) { showToast('Dibujá tu firma primero', 'error'); return; }
+  try {
+    const r = await fetch(`${API}/licencias/${licFirmandoId}/firmar`, { method: 'POST', headers: H(), body: JSON.stringify({ imagenBase64: sigEmp.toDataURL('image/png') }) });
+    if (!r.ok) throw new Error();
+    closeModal('modal-firma-emp');
+    showToast('Conformidad firmada', 'success');
+    setTimeout(cargarEmpleado, 1000);
+  } catch { showToast('Error', 'error'); }
+}
+
+async function guardarLicencia() {
+  const empleadoId   = document.getElementById('lic-emp').value;
+  const tipo         = document.getElementById('lic-tipo').value;
+  const fechaInicio  = document.getElementById('lic-ini').value;
+  const fechaFin     = document.getElementById('lic-fin').value;
+  const observaciones = document.getElementById('lic-obs').value;
+  if (!empleadoId || !fechaInicio || !fechaFin) { showToast('Completá los campos obligatorios', 'error'); return; }
+  const btn = document.getElementById('btn-guardar-lic');
+  btn.disabled = true; btn.textContent = 'Guardando...';
+  try {
+    const r    = await fetch(`${API}/licencias`, { method: 'POST', headers: H(), body: JSON.stringify({ empleadoId, tipo, fechaInicio, fechaFin, observaciones }) });
+    const data = await r.json();
+    if (!r.ok) { showToast(data.error || 'Error', 'error'); return; }
+    closeModal('modal-licencia');
+    document.getElementById('lic-obs').value = '';
+    showToast('Licencia registrada', 'success');
+    setTimeout(() => usuario.rol === 'ADMIN' ? cargarAdmin() : cargarEmpleado(), 800);
+  } catch { showToast('Error de conexión', 'error'); }
+  finally { btn.disabled = false; btn.textContent = 'Guardar licencia'; }
+}
+
+async function eliminarLicencia(id, btn) {
+  if (!confirm('¿Seguro que querés eliminar esta licencia? Esta acción no se puede deshacer.')) return;
+  btn.disabled = true; btn.textContent = '...';
+  try {
+    const r = await fetch(`${API}/licencias/${id}`, { method: 'DELETE', headers: H() });
+    if (!r.ok) throw new Error((await r.json()).error);
+    const tr = btn.closest('tr');
+    tr.style.opacity = '0'; tr.style.transition = 'opacity .3s';
+    setTimeout(() => tr.remove(), 300);
+    showToast('Licencia eliminada', 'info');
+  } catch (e) {
+    showToast(e.message || 'Error al eliminar', 'error');
+    btn.disabled = false; btn.textContent = 'Eliminar';
+  }
+}
+
+async function cambiarPassword() {
+  const actual  = document.getElementById('pass-actual').value;
+  const nueva   = document.getElementById('pass-nueva').value;
+  const confirm = document.getElementById('pass-confirm').value;
+  if (!actual || !nueva || !confirm) { showToast('Completá todos los campos', 'error'); return; }
+  if (nueva.length < 6)  { showToast('Mínimo 6 caracteres', 'error'); return; }
+  if (nueva !== confirm) { showToast('Las contraseñas no coinciden', 'error'); return; }
+  try {
+    const loginR = await fetch(`${API}/auth/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: usuario.email, password: actual }) });
+    if (!loginR.ok) { showToast('La contraseña actual es incorrecta', 'error'); return; }
+    const r = await fetch(`${API}/auth/cambiar-password`, { method: 'POST', headers: H(), body: JSON.stringify({ passwordActual: actual, passwordNueva: nueva }) });
+    if (!r.ok) throw new Error((await r.json()).error);
+    closeModal('modal-pass');
+    ['pass-actual', 'pass-nueva', 'pass-confirm'].forEach(id => document.getElementById(id).value = '');
+    showToast('Contraseña actualizada', 'success');
+  } catch (e) { showToast(e.message || 'Error', 'error'); }
+}
+
+// ─── FILTROS ─────────────────────────────────────────────────────────────────
+function filtrarTabla(q) {
+  document.querySelectorAll('#tbody-emp tr').forEach(r => {
+    r.style.display = (r.getAttribute('data-nombre') || '').includes(q.toLowerCase()) ? '' : 'none';
+  });
+}
+
+function filtrarArea(area, el) {
+  document.querySelectorAll('.tabs button').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('#tbody-emp tr').forEach(r => {
+    const a = r.getAttribute('data-area') || '';
+    if (area === 'todos') r.style.display = '';
+    else if (area === 'deposito') r.style.display = a.includes('deposito') ? '' : 'none';
+    else if (area === 'ventas')   r.style.display = a.includes('ventas')   ? '' : 'none';
+    else r.style.display = (!a.includes('deposito') && !a.includes('ventas')) ? '' : 'none';
+  });
+}
+
+function calcPrev() {
+  const ini = document.getElementById('lic-ini').value;
+  const fin = document.getElementById('lic-fin').value;
+  const el  = document.getElementById('prev-val');
+  if (!ini || !fin || fin < ini) { el.textContent = '—'; return; }
+  let dias = 0;
+  const cur = new Date(ini + 'T12:00:00'), finD = new Date(fin + 'T12:00:00');
+  while (cur <= finD) {
+    if (cur.getDay() !== 0 && !feriados.includes(cur.toISOString().split('T')[0])) dias++;
+    cur.setDate(cur.getDate() + 1);
+  }
+  el.textContent = dias;
+}
+
+function exportarCSV() {
+  if (!empleados.length) return;
+  const rows = empleados.map(e => `${e.nombre},${e.apellido},${e.area},${e.documento || ''},${e.fechaIngreso.split('T')[0]},${e.diasAsignados},${e.diasTomados},${e.saldoTotal}`);
+  const csv  = ['Nombre,Apellido,Area,Documento,Ingreso,Asignados,Tomados,Saldo', ...rows].join('\n');
+  const a    = document.createElement('a');
+  a.href     = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = `licencias_${new Date().getFullYear()}.csv`;
+  a.click();
+}
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function antig(f) {
+  const a = (new Date() - new Date(f)) / (365.25 * 24 * 3600 * 1000);
+  return a < 1 ? Math.round(a * 12) + ' meses' : a.toFixed(1).replace('.0', '') + ' años';
+}
+function fmtD(d) { return new Date(d).toLocaleDateString('es-AR', { day: '2-digit', month: 'short' }); }
+function tipoLabel(t) { return { VACACIONES: 'Vacaciones', PERMISO: 'Permiso', LICENCIA_MEDICA: 'Lic. médica', AUSENCIA: 'Ausencia' }[t] || t; }
+function estadoBadge(e) {
+  const m = {
+    PENDIENTE: ['badge-warn',  'Pendiente'],
+    APROBADA:  ['badge-ok',    'Aprobada'],
+    RECHAZADA: ['badge-bad',   'Rechazada'],
+    CUMPLIDA:  ['badge-info',  'Cumplida'],
+  };
+  const [c, l] = m[e] || ['badge-neutral', e];
+  return `<span class="badge ${c}"><span class="dot"></span>${l}</span>`;
+}
+
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function closeOut(e, id) { if (e.target === document.getElementById(id)) closeModal(id); }
+
 let toastT;
-function showToast(msg,type='success'){const t=document.getElementById('toast');t.textContent=msg;t.className=`toast ${type} show`;clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3500);}
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className   = `toast ${type} show`;
+  clearTimeout(toastT);
+  toastT = setTimeout(() => t.classList.remove('show'), 3500);
+}
 </script>
 </body>
 </html>
